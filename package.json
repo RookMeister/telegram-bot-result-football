@@ -1,0 +1,25 @@
+{
+  "name": "telegram-bot-result-football",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RookMeister/telegram-bot-result-football.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RookMeister/telegram-bot-result-football/issues"
+  },
+  "homepage": "https://github.com/RookMeister/telegram-bot-result-football#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.0",
+    "telegraf": "^3.38.0"
+  }
+}
