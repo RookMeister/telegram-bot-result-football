@@ -33,7 +33,7 @@ bot.on('callback_query', async (ctx) => {
   console.log(3, url);
   const info = await getData(url);
   console.log(info)
-  ctx.reply(info)
+  ctx.replyWithMarkdown(info)
 })
 
 bot.use(session())
@@ -49,7 +49,7 @@ async function getData(url) {
     const team = json.tournament_table[0].list[0];
     console.log(json.tournament_table[0].list[0])
     // const author = json.quoteAuthor.length === 0 ? 'Автор не известен' : json.quoteAuthor;
-    return `<b>${team.place} место</b>\n\u2014 <i>команда ${team.team_info.name}</i>`;
+    return `*${team.place} место* \u2014 _команда ${team.team_info.name}_`;
   } catch (err) {
     console.error('Fail to fetch data: ' + err);
     // return 'Мысль потеряна! Попробуй ещё раз.';
