@@ -34,27 +34,42 @@ bot.start((ctx) => {
 bot.action(/^[0-9]{2}$/i, ctx => {
   ctx.session.country = ctx.update.callback_query.data || null;
   ctx.reply('Выберите информацию', Markup.inlineKeyboard([
-    Markup.callbackButton('Турнирная таблица', 'tournament_table')
+    Markup.callbackButton('Турнирная таблица', 'tournament_table'),
+    Markup.callbackButton('Результаты', 'last_matches'),
+    Markup.callbackButton('Календарь', 'future_matches'),
   ]).extra())
 })
 
 bot.on('callback_query', async (ctx) => {
   const url = returnApi(ctx.session.country, ctx.update.callback_query.data);
-  const info = await getData(url);
+  const info = await getData(url, ctx.update.callback_query.data);
   ctx.replyWithHTML(info)
 })
 
 bot.launch()
 
-// Определение функции получения данных и возврат отформатированной цитаты:
-async function getData(url) {
+// Определение функции получения данных и возврат отформатированной :
+async function getData(url, view) {
   try {
     const data = await fetch(url);
     const json = await data.json();
     let result = '';
-    json.tournament_table[0].list.forEach(element => {
-      result +=`<b>${element.place} место</b> \u2014 <i>${element.team_info.name}</i>\r\n`;
-    });
+    if (view === 'tournament_table') {
+      json.tournament_table[0].list.forEach(element => {
+        result +=`<b>${element.place} место</b> \u2014 <i>${element.team_info.name}</i>\r\n`;
+      });
+    } else if (view === 'last_matches') {
+      json.match_list.forEach(element => {
+        result += `\r\n<i>${element.title}</i>\r\n\r\n`;
+        if (element.matches.length) {
+          element.matches.forEach(el => {
+            result += `${el.first_team.name} \u2014 ${el.second_team.name}  ${el.first_team.goals}:${el.second_team.goals}\r\n`;
+          });
+        }
+      });
+    } else if (view === 'future_matches') {
+      // json.match_list.forEach(element => {
+    }
     return result;
   } catch (err) {
     console.error('Fail to fetch data: ' + err);
