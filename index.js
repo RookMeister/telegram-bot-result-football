@@ -31,6 +31,18 @@ bot.start((ctx) => {
   ]).extra())
 })
 
+bot.command('select', ({ reply }) => {
+  return reply('Custom buttons keyboard', Markup
+    .keyboard([
+      ['🔍 Search', '😎 Popular'], // Row1 with 2 buttons
+      ['☸ Setting', '📞 Feedback'], // Row2 with 2 buttons
+    ])
+    .oneTime()
+    .resize()
+    .extra()
+  )
+})
+
 bot.action(/^[0-9]{2}$/i, ctx => {
   ctx.session.country = ctx.update.callback_query.data || null;
   ctx.reply('Выберите информацию', Markup.inlineKeyboard([
