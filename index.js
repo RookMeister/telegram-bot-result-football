@@ -21,7 +21,7 @@ function returnApi(countryNumber, viewResult) {
 bot.use(session())
 
 bot.start((ctx) => {
-  ctx.reply('Добро пожаловать. Выберите страну!', Markup.inlineKeyboard([
+  ctx.reply('Добро пожаловать. Выберите чемпионат!', Markup.inlineKeyboard([
     Markup.callbackButton('🇷🇺', 31),
     Markup.callbackButton('🏴󠁧󠁢󠁥󠁮󠁧󠁿', 52),
     Markup.callbackButton('🇪🇸', 49),
@@ -58,17 +58,20 @@ async function getData(url, view) {
       json.tournament_table[0].list.forEach(element => {
         result +=`<b>${element.place} место</b> \u2014 <i>${element.team_info.name}</i>\r\n`;
       });
-    } else if (view === 'last_matches') {
+    } else {
       json.match_list.forEach(element => {
         result += `\r\n<i>${element.title}</i>\r\n\r\n`;
         if (element.matches.length) {
           element.matches.forEach(el => {
-            result += `${el.first_team.name} \u2014 ${el.second_team.name}  ${el.first_team.goals}:${el.second_team.goals}\r\n`;
+            if (view === 'last_matches') {
+              result += `${el.first_team.name} \u2014 ${el.second_team.name}  ${el.first_team.goals}:${el.second_team.goals}\r\n`;
+            }
+            else {
+              result += `${el.first_team.name} \u2014 ${el.second_team.name} (${el.start_time.bulgakov} - мск. время в)\r\n`;
+            }
           });
         }
       });
-    } else if (view === 'future_matches') {
-      // json.match_list.forEach(element => {
     }
     return result;
   } catch (err) {
