@@ -1,13 +1,13 @@
 const fetch = require('node-fetch');
-const stringTable = require('string-table');
+// const stringTable = require('string-table');
 require('dotenv').config();
 
 const Telegraf = require('telegraf')
-const Composer = require('telegraf/composer')
+// const Composer = require('telegraf/composer')
 const session = require('telegraf/session')
-const Stage = require('telegraf/stage')
+// const Stage = require('telegraf/stage')
 const Markup = require('telegraf/markup')
-const WizardScene = require('telegraf/scenes/wizard')
+// const WizardScene = require('telegraf/scenes/wizard')
 // const stage = new Stage([superWizard], { default: 'super-wizard' })
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -16,22 +16,17 @@ function returnApi(countryNumber, viewResult) {
   return `https://www.sports.ru/core/stat/gadget/${viewResult}/?args={%22tournament_id%22:${countryNumber}}`;
 }
 
+// Country
+const country = ['🇷🇺', '🏴󠁧󠁢󠁥󠁮󠁧󠁿', '🇪🇸', '🇮🇹', '🇩🇪', '🇫🇷'];
+const countryCode = {'🇷🇺': 31, '🏴󠁧󠁢󠁥󠁮󠁧󠁿': 52, '🇪🇸': 49, '🇮🇹': 48, '🇩🇪': 50, '🇫🇷': 51};
+// View
+const view = ['Турнирная таблица', 'Результаты', 'Календарь'];
+const viewCode = {'Турнирная таблица': 'tournament_table', 'Результаты': 'last_matches', 'Календарь': 'future_matches'};
+
 bot.use(session())
 
-// bot.command('start', ({ reply }) => {
-//   return reply('Добро пожаловать. Выберите чемпионат!', Markup.inlineKeyboard([
-//     Markup.callbackButton('🇷🇺', 31),
-//     Markup.callbackButton('🏴󠁧󠁢󠁥󠁮󠁧󠁿', 52),
-//     Markup.callbackButton('🇪🇸', 49),
-//     Markup.callbackButton('🇮🇹', 48),
-//     Markup.callbackButton('🇩🇪', 50),
-//     Markup.callbackButton('🇫🇷', 51),
-//   ]).extra())
-// })
-
-// bot.on('Выберите информацию',(ctx) => {
-  // console.log(2)
-  // ctx.reply('Добро пожаловать. Выберите чемпионат!', Markup.inlineKeyboard([
+bot.hears('Чемпионат', ({reply}) => {
+  // ctx.reply('Выберите чемпионат!', Markup.inlineKeyboard([
   //   Markup.callbackButton('🇷🇺', 31),
   //   Markup.callbackButton('🏴󠁧󠁢󠁥󠁮󠁧󠁿', 52),
   //   Markup.callbackButton('🇪🇸', 49),
@@ -39,41 +34,57 @@ bot.use(session())
   //   Markup.callbackButton('🇩🇪', 50),
   //   Markup.callbackButton('🇫🇷', 51),
   // ]).extra())
-// })
-
-
-// bot.on('1', (ctx) => {
-//   console.log('text')
-//   ctx.reply('Добро пожаловать. Выберите чемпионат!1')
-// })
-
-bot.hears('Чемпионат', (ctx) => {
-  ctx.reply('Выберите чемпионат!', Markup.inlineKeyboard([
-    Markup.callbackButton('🇷🇺', 31),
-    Markup.callbackButton('🏴󠁧󠁢󠁥󠁮󠁧󠁿', 52),
-    Markup.callbackButton('🇪🇸', 49),
-    Markup.callbackButton('🇮🇹', 48),
-    Markup.callbackButton('🇩🇪', 50),
-    Markup.callbackButton('🇫🇷', 51),
-  ]).extra())
-})
-
-bot.command('start', ({ reply }) => {
-  return reply('2',Markup
+  return reply('Выберите чемпионат',Markup
     .keyboard([
-      ['Чемпионат'],
-      ['Турнирная таблица', 'Результаты', 'Календарь']
+      country
     ])
     .resize()
+    .oneTime()
     .extra()
   )
 })
 
-bot.hears('Турнирная таблица', async (ctx) => {
-  console.log(ctx)
-  const url = returnApi(ctx.session.country, 'tournament_table');
-  const info = await getData(url, 'tournament_table');
-  ctx.replyWithHTML(info)
+bot.command('start', ({ reply }) => {
+  return reply('Добро пожаловать. Нажми на кнопку "Чемпионат"',Markup
+    .keyboard([
+      ['Чемпионат'],
+    ])
+    .resize()
+    .oneTime()
+    .extra()
+  )
+})
+
+bot.hears(country, (ctx) => {
+  console.log(1, ctx.match)
+  ctx.session.country = countryCode[ctx.match]
+  ctx.reply('Выберите вид информации',Markup
+    .keyboard([
+      [...view, 'Чемпионат']
+    ])
+    .resize()
+    .oneTime()
+    .extra()
+  )
+})
+
+bot.hears(view, async (ctx) => {
+  console.log(2, ctx.match)
+  ctx.session.view = viewCode[ctx.match]
+  if (!ctx.session.country) {
+    ctx.reply('Выберите чемпионат',Markup
+      .keyboard([
+        ['Чемпионат']
+      ])
+      .resize()
+      .oneTime()
+      .extra()
+    )
+  } else {
+    const url = returnApi(ctx.session.country, ctx.session.view);
+    const info = await getData(url, ctx.session.view);
+    ctx.replyWithHTML(info)
+  }
 })
 
 // bot.action(/^[0-9]{2}$/i, ctx => {
@@ -85,12 +96,13 @@ bot.hears('Турнирная таблица', async (ctx) => {
 //   ]).extra())
 // })
 
-bot.on('callback_query', async (ctx) => {
-  const url = returnApi(ctx.session.country, ctx.update.callback_query.data);
-  const info = await getData(url, ctx.update.callback_query.data);
-  ctx.replyWithHTML(info)
-  // ctx.reply(info)
-})
+// bot.on('callback_query', async (ctx) => {
+//   console.log(3, ctx.match)
+  // const url = returnApi(ctx.session.country, ctx.update.callback_query.data);
+  // const info = await getData(url, ctx.update.callback_query.data);
+  // ctx.replyWithHTML(info)
+//   ctx.reply(1123)
+// })
 
 bot.launch()
 
@@ -116,7 +128,7 @@ async function getData(url, view) {
               result += `${el.first_team.name} \u2014 ${el.second_team.name}  ${el.first_team.goals}:${el.second_team.goals}\r\n`;
             }
             else {
-              result += `${el.first_team.name} \u2014 ${el.second_team.name} (${el.start_time.bulgakov} - мск. время в)\r\n`;
+              result += `${el.first_team.name} \u2014 ${el.second_team.name} (${el.start_time.bulgakov} - мск. время)\r\n`;
             }
           });
         }
