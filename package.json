@@ -20,6 +20,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "node-fetch": "^2.6.0",
+    "string-table": "^0.1.5",
     "telegraf": "^3.38.0"
   }
 }
