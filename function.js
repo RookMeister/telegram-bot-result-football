@@ -3,12 +3,18 @@ const stringTable = require('string-table');
 
 exports.dateNow = function () {
   const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  const year = d.getFullYear();
+  const mounth = d.getMonth() + 1;
+  const day = d.getDate();
+  return `${year}-${(mounth > 9) ? mounth : '0' + mounth}-${day}`;
 }
 
 exports.datePrev = function () {
   const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate() - 1}`;
+  const year = d.getFullYear();
+  const mounth = d.getMonth() + 1;
+  const day = d.getDate() - 1;
+  return `${year}-${(mounth > 9) ? mounth : '0' + mounth}-${day}`;
 }
 
 // API Sports
@@ -66,26 +72,17 @@ exports.getDataChampionat = async function (date) {
     const data = await fetch(url);
     const json = await data.json();
     let result = '';
-    if (json.matches.football.tournaments.length) {
-      json.matches.football.tournaments.forEach(element => {
-        result += `\r\n<i>${element.name}</i>\r\n\r\n`;
-        element.matches.forEach(el => {
-          if (this.dateNow === date) {
+    if (json.matches.football.tournaments) {
+      Object.entries(json.matches.football.tournaments).forEach(([key, value]) => {
+        result += `\r\n<i>${value.name}</i>\r\n\r\n`;
+        value.matches.forEach(el => {
+          if (!el.result) {
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name} (${el.time} - мск. время)\r\n`;
           } else {
+            console.log(el.teams[0].name, el.teams[1].name)
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name}  ${el.result.detailed.goal1}:${el.result.detailed.goal2}\r\n`;
           }
         });
-        // if (element.matches.length) {
-        //   element.matches.forEach(el => {
-        //     if (view === 'last_matches') {
-        //       result += `${el.first_team.name} \u2014 ${el.second_team.name}  ${el.first_team.goals}:${el.second_team.goals}\r\n`;
-        //     }
-        //     else {
-        //       result += `${el.first_team.name} \u2014 ${el.second_team.name} (${el.start_time.time} - мск. время)\r\n`;
-        //     }
-        //   });
-        // }
       });
     } else {
       result += 'Нет данных';

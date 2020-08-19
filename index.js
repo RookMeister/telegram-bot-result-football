@@ -76,20 +76,20 @@ bot.hears('Главное меню', (ctx) => {
 });
 
 bot.hears('Чемпионаты', (ctx) => ctx.scene.enter('super-wizard'));
-bot.hears('Сегодняшние матчи', (ctx) => {
+bot.hears('Сегодняшние матчи', async (ctx) => {
   const options = exp.noneKeyboard;
   try {
-    const info = await func.getDataChampionat(func.dateNow);
+    const info = await func.getDataChampionat(func.dateNow());
     ctx.replyWithHTML(info, options);
   } catch (e) {
     ctx.reply('Ошибка');
     console.error(e);
   }
 });
-bot.hears('Вчерашние матчи', (ctx) => {
+bot.hears('Вчерашние матчи', async (ctx) => {
   const options = exp.noneKeyboard;
   try {
-    const info = await func.getDataChampionat(func.datePrev);
+    const info = await func.getDataChampionat(func.datePrev());
     ctx.replyWithHTML(info, options);
   } catch (e) {
     ctx.reply('Ошибка');
