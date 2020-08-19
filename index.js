@@ -33,8 +33,8 @@ stepViewResult.hears(new RegExp(exp.viewResult.map(el => el.text).join("|")), as
   try {
     const countryCode = exp.countryCode[ctx.session.country];
     const viewResultCode = exp.viewResultCode[ctx.match.input];
-    const url = func.returnApi(countryCode, viewResultCode);
-    const info = await func.getData(url, viewResultCode);
+    const url = func.returnApiSports(countryCode, viewResultCode);
+    const info = await func.getDataSports(url, viewResultCode);
     ctx.replyWithHTML(info, options);
   } catch (e) {
     ctx.reply('Ошибка');
@@ -65,6 +65,36 @@ const stage = new Stage([superWizard]);
 bot.use(Session());
 
 bot.use(stage.middleware());
-bot.command('start', (ctx) => ctx.scene.enter('super-wizard'));
-bot.hears('Повторить', (ctx) => ctx.scene.enter('super-wizard'));
+
+bot.command('start', (ctx) => {
+  const options = exp.mainKeyboard;
+  ctx.replyWithHTML('Выберите раздел в главном меню', options);
+});
+bot.hears('Главное меню', (ctx) => {
+  const options = exp.mainKeyboard;
+  ctx.replyWithHTML('Выберите раздел в главном меню', options);
+});
+
+bot.hears('Чемпионаты', (ctx) => ctx.scene.enter('super-wizard'));
+bot.hears('Сегодняшние матчи', (ctx) => {
+  const options = exp.noneKeyboard;
+  try {
+    const info = await func.getDataChampionat(func.dateNow);
+    ctx.replyWithHTML(info, options);
+  } catch (e) {
+    ctx.reply('Ошибка');
+    console.error(e);
+  }
+});
+bot.hears('Вчерашние матчи', (ctx) => {
+  const options = exp.noneKeyboard;
+  try {
+    const info = await func.getDataChampionat(func.datePrev);
+    ctx.replyWithHTML(info, options);
+  } catch (e) {
+    ctx.reply('Ошибка');
+    console.error(e);
+  }
+});
+
 bot.launch();
