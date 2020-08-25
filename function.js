@@ -79,7 +79,6 @@ exports.getDataChampionat = async function (date) {
           if (!el.result) {
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name} (${el.time} - мск. время)\r\n`;
           } else {
-            console.log(el.teams[0].name, el.teams[1].name)
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name}  ${el.result.detailed.goal1}:${el.result.detailed.goal2}\r\n`;
           }
         });

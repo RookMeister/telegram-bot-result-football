@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const exp = require('./const');
 const func = require('./function');
+const botFunc = require('./funcForBot');
 
 const Telegraf = require('telegraf');
 const Session = require('telegraf/session');
@@ -16,85 +17,25 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 const stepCountry = new Composer();
 const stepViewResult = new Composer();
 
-stepCountry.hears(new RegExp(exp.country.map(el => el.text).join("|")), (ctx) => {
-  const options = exp.viewResultKeyboard;
-  ctx.session.country = ctx.match.input;
-  try {
-    ctx.replyWithHTML('Выбери вид результата', options);
-  } catch (e) {
-    ctx.reply('Ошибка', exp.noneKeyboard);
-    console.error(e);
-  }
-  return ctx.wizard.next();
-});
-
-stepViewResult.hears(new RegExp(exp.viewResult.map(el => el.text).join("|")), async (ctx) => {
-  const options = exp.noneKeyboard;
-  try {
-    const countryCode = exp.countryCode[ctx.session.country];
-    const viewResultCode = exp.viewResultCode[ctx.match.input];
-    const url = func.returnApiSports(countryCode, viewResultCode);
-    const info = await func.getDataSports(url, viewResultCode);
-    ctx.replyWithHTML(info, options);
-  } catch (e) {
-    ctx.reply('Ошибка');
-    console.error(e);
-  }
-  return ctx.scene.leave();
-});
-
-stepCountry.use((ctx) => ctx.replyWithMarkdown('Введите флаг чемпионата'));
-stepViewResult.use((ctx) => ctx.replyWithMarkdown('Введите вид результата'));
-
 const superWizard = new WizardScene('super-wizard',
-  (ctx) => {
-    const options = exp.countryKeyboard;
-    try {
-      ctx.replyWithHTML('Выберите чемпионат', options);
-    } catch (e) {
-      ctx.reply('Ошибка', exp.noneKeyboard);
-      console.error(e);
-    }
-    return ctx.wizard.next();
-  },
+  async (ctx) =>  await botFunc.stepSelectCountry(ctx),
   stepCountry,
   stepViewResult,
 );
 
 const stage = new Stage([superWizard]);
+
 bot.use(Session());
-
 bot.use(stage.middleware());
+stepCountry.use((ctx) => ctx.replyWithMarkdown('Введите флаг чемпионата'));
+stepViewResult.use((ctx) => ctx.replyWithMarkdown('Введите вид результата'));
 
-bot.command('start', (ctx) => {
-  const options = exp.mainKeyboard;
-  ctx.replyWithHTML('Выберите раздел в главном меню', options);
-});
-bot.hears('Главное меню', (ctx) => {
-  const options = exp.mainKeyboard;
-  ctx.replyWithHTML('Выберите раздел в главном меню', options);
-});
-
+bot.command('start', async (ctx) =>  await botFunc.mainMenu(ctx));
+bot.hears('Главное меню', async (ctx) => await botFunc.mainMenu(ctx));
 bot.hears('Чемпионаты', (ctx) => ctx.scene.enter('super-wizard'));
-bot.hears('Сегодняшние матчи', async (ctx) => {
-  const options = exp.noneKeyboard;
-  try {
-    const info = await func.getDataChampionat(func.dateNow());
-    ctx.replyWithHTML(info, options);
-  } catch (e) {
-    ctx.reply('Ошибка');
-    console.error(e);
-  }
-});
-bot.hears('Вчерашние матчи', async (ctx) => {
-  const options = exp.noneKeyboard;
-  try {
-    const info = await func.getDataChampionat(func.datePrev());
-    ctx.replyWithHTML(info, options);
-  } catch (e) {
-    ctx.reply('Ошибка');
-    console.error(e);
-  }
-});
+bot.hears('Сегодняшние матчи', async (ctx) => await botFunc.getMatches(ctx, true));
+bot.hears('Вчерашние матчи', async (ctx) => await botFunc.getMatches(ctx, false));
+stepCountry.hears(exp.regexpContry, async (ctx) => await botFunc.stepSelectViewResult(ctx));
+stepViewResult.hears(exp.regexpViewResult, async (ctx) => await botFunc.outputResult(ctx));
 
 bot.launch();
