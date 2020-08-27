@@ -74,12 +74,17 @@ exports.getDataChampionat = async function (date) {
     let result = '';
     if (json.matches.football.tournaments) {
       Object.entries(json.matches.football.tournaments).forEach(([key, value]) => {
-        result += `\r\n<i>${value.name}</i>\r\n\r\n`;
+        if (!value.is_top) {
+          return;
+        }
+        result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
         value.matches.forEach(el => {
-          if (!el.result) {
-            result += `${el.teams[0].name} \u2014 ${el.teams[1].name} (${el.time} - мск. время)\r\n`;
+          if (el.result) {
+            result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
+          } else if (el.date === exports.datePrev()) {
+            result += `${el.teams[0].name} \u2014 ${el.teams[1].name} (${el.status})\r\n`;
           } else {
-            result += `${el.teams[0].name} \u2014 ${el.teams[1].name}  ${el.result.detailed.goal1}:${el.result.detailed.goal2}\r\n`;
+            result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : ''}\r\n`;
           }
         });
       });
