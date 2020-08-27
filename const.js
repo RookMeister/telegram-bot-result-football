@@ -4,7 +4,7 @@ exports.welcome = `Добро пожаловать. Выбери чемпион�
 exports.help = `Выбирай`;
 
 // Main
-exports.mainMenu = [[{ text: 'Вчера'}, { text: 'Сегодня'}, { text: 'Завтра'}, { text: 'Сейчас'}], [{ text: 'Чемпионат'}]];
+exports.mainMenu = [[{ text: 'Вчера'}, { text: 'Сегодня'}, { text: 'Завтра'}], [{ text: 'Чемпионат'}]];
 
 // Country
 exports.country = [{ text: '🇷🇺' }, { text: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' }, { text: '🇪🇸' }, { text: '🇮🇹' }, { text: '🇩🇪' }, { text: '🇫🇷' }];

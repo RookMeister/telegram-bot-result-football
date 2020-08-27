@@ -6,10 +6,10 @@ exports.mainMenu = async function(ctx) {
   ctx.replyWithHTML('Выберите раздел в главном меню', options);
 }
 
-exports.getMatches = async function(ctx, now) {
+exports.getMatches = async function(ctx, time) {
   const options = exp.noneKeyboard;
   try {
-    const info = await func.getDataChampionat(now ? func.dateNow() : func.datePrev());
+    const info = await func.getDataChampionat(func.date(time));
     ctx.replyWithHTML(info, options);
   } catch (e) {
     ctx.reply('Ошибка');

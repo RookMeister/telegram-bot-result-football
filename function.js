@@ -1,19 +1,16 @@
 const fetch = require('node-fetch');
 const stringTable = require('string-table');
 
-exports.dateNow = function () {
+exports.date = function (time) {
   const d = new Date();
   const year = d.getFullYear();
   const mounth = d.getMonth() + 1;
-  const day = d.getDate();
-  return `${year}-${(mounth > 9) ? mounth : '0' + mounth}-${day}`;
-}
-
-exports.datePrev = function () {
-  const d = new Date();
-  const year = d.getFullYear();
-  const mounth = d.getMonth() + 1;
-  const day = d.getDate() - 1;
+  let day = d.getDate();
+  if (time === 'prev') {
+    day = day - 1
+  } else if (time === 'next') {
+    day = day + 1
+  }
   return `${year}-${(mounth > 9) ? mounth : '0' + mounth}-${day}`;
 }
 
@@ -81,7 +78,7 @@ exports.getDataChampionat = async function (date) {
         value.matches.forEach(el => {
           if (el.result) {
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
-          } else if (el.date === exports.datePrev()) {
+          } else if (el.date === exports.date('prev')) {
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name} (${el.status})\r\n`;
           } else {
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : ''}\r\n`;

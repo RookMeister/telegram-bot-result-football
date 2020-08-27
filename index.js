@@ -33,8 +33,9 @@ stepViewResult.use((ctx) => ctx.replyWithMarkdown('Введите вид рез�
 bot.command('start', async (ctx) =>  await botFunc.mainMenu(ctx));
 bot.hears('Главное меню', async (ctx) => await botFunc.mainMenu(ctx));
 bot.hears('Чемпионаты', (ctx) => ctx.scene.enter('super-wizard'));
-bot.hears('Сегодняшние матчи', async (ctx) => await botFunc.getMatches(ctx, true));
-bot.hears('Вчерашние матчи', async (ctx) => await botFunc.getMatches(ctx, false));
+bot.hears('Завтра', async (ctx) => await botFunc.getMatches(ctx, 'next'));
+bot.hears('Сегодня', async (ctx) => await botFunc.getMatches(ctx, 'now'));
+bot.hears('Вчера', async (ctx) => await botFunc.getMatches(ctx, 'prev'));
 stepCountry.hears(exp.regexpContry, async (ctx) => await botFunc.stepSelectViewResult(ctx));
 stepViewResult.hears(exp.regexpViewResult, async (ctx) => await botFunc.outputResult(ctx));
 
