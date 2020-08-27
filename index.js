@@ -19,8 +19,8 @@ const stepViewResult = new Composer();
 
 const superWizard = new WizardScene('super-wizard',
   async (ctx) =>  await botFunc.stepSelectCountry(ctx),
-  stepCountry,
-  stepViewResult,
+  stepCountry.hears(exp.regexpContry, async (ctx) => await botFunc.stepSelectViewResult(ctx)),
+  stepViewResult.hears(exp.regexpViewResult, async (ctx) => await botFunc.outputResult(ctx)),
 );
 
 const stage = new Stage([superWizard]);
@@ -36,7 +36,5 @@ bot.hears('Чемпионаты', (ctx) => ctx.scene.enter('super-wizard'));
 bot.hears('Завтра', async (ctx) => await botFunc.getMatches(ctx, 'next'));
 bot.hears('Сегодня', async (ctx) => await botFunc.getMatches(ctx, 'now'));
 bot.hears('Вчера', async (ctx) => await botFunc.getMatches(ctx, 'prev'));
-stepCountry.hears(exp.regexpContry, async (ctx) => await botFunc.stepSelectViewResult(ctx));
-stepViewResult.hears(exp.regexpViewResult, async (ctx) => await botFunc.outputResult(ctx));
 
 bot.launch();
