@@ -78,7 +78,7 @@ exports.getDataChampionat = async function (date) {
         value.matches.forEach(el => {
           if (el.result) {
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
-          } else if (el.date === exports.date('prev')) {
+          } else if ((el.date === exports.date('prev')) || (el.date === exports.date('next'))) {
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name} (${el.status})\r\n`;
           } else {
             result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : ''}\r\n`;
