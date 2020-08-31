@@ -14,6 +14,7 @@ exports.getMatches = async function(ctx, time) {
   } catch (e) {
     ctx.reply('Ошибка');
     console.error(e);
+    this.sendToMe(ctx, e)
   }
 }
 
@@ -24,6 +25,7 @@ exports.stepSelectCountry = async function(ctx) {
   } catch (e) {
     ctx.reply('Ошибка', exp.noneKeyboard);
     console.error(e);
+    this.sendToMe(ctx, e)
   }
   return ctx.wizard.next();
 }
@@ -36,6 +38,7 @@ exports.stepSelectViewResult = async function(ctx) {
   } catch (e) {
     ctx.reply('Ошибка', exp.noneKeyboard);
     console.error(e);
+    this.sendToMe(ctx, e)
   }
   return ctx.wizard.next();
 }
@@ -50,7 +53,12 @@ exports.outputResult = async function(ctx) {
     ctx.replyWithHTML(info, options);
   } catch (e) {
     ctx.reply('Ошибка');
+    this.sendToMe(ctx, e)
     console.error(e);
   }
   return ctx.scene.leave();
+}
+
+exports.sendToMe = async function(ctx, e) {
+  ctx.telegram.sendMessage(302423620, `${ctx.message.chat.id} - ${ctx.message.text} - ${ctx.from.username} : ${e}`);
 }

@@ -30,7 +30,7 @@ bot.use(stage.middleware());
 stepCountry.use((ctx) => ctx.replyWithMarkdown('Введите флаг чемпионата'));
 stepViewResult.use((ctx) => ctx.replyWithMarkdown('Введите вид результата'));
 
-bot.command('start', async (ctx) =>  await botFunc.mainMenu(ctx));
+bot.command('start', async (ctx) => await botFunc.mainMenu(ctx));
 bot.hears('Главное меню', async (ctx) => await botFunc.mainMenu(ctx));
 bot.hears('Чемпионаты', (ctx) => ctx.scene.enter('super-wizard'));
 bot.hears('Завтра', async (ctx) => await botFunc.getMatches(ctx, 'next'));
