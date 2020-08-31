@@ -7,7 +7,7 @@ exports.mainMenu = async function(ctx) {
 }
 
 exports.getMatches = async function(ctx, time) {
-  const options = exp.noneKeyboard;
+  const options = exp.mainKeyboard;
   try {
     const info = await func.getDataChampionat(func.date(time));
     ctx.replyWithHTML(info, options);
@@ -41,7 +41,7 @@ exports.stepSelectViewResult = async function(ctx) {
 }
 
 exports.outputResult = async function(ctx) {
-  const options = exp.noneKeyboard;
+  const options = exp.mainKeyboard;
   try {
     const countryCode = exp.countryCode[ctx.session.country];
     const viewResultCode = exp.viewResultCode[ctx.match.input];
