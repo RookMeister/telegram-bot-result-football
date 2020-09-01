@@ -1,17 +1,17 @@
 const fetch = require('node-fetch');
 const stringTable = require('string-table');
+const formatISO = require('date-fns/formatISO');
+const startOfTomorrow = require('date-fns/startOfTomorrow');
+const startOfYesterday = require('date-fns/startOfYesterday');
+const startOfToday = require('date-fns/startOfToday');
 
 exports.date = function (time) {
-  const d = new Date();
-  const year = d.getFullYear();
-  const mounth = d.getMonth() + 1;
-  let day = d.getDate();
   if (time === 'prev') {
-    day = day - 1
+    return formatISO(startOfYesterday(), { representation: 'date' })
   } else if (time === 'next') {
-    day = day + 1
+    return formatISO(startOfTomorrow(), { representation: 'date' })
   }
-  return `${year}-${(mounth > 9) ? mounth : '0' + mounth}-${day}`;
+  return formatISO(startOfToday(), { representation: 'date' });
 }
 
 // API Sports
