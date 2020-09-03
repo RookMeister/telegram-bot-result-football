@@ -5,6 +5,8 @@ const startOfTomorrow = require('date-fns/startOfTomorrow');
 const startOfYesterday = require('date-fns/startOfYesterday');
 const startOfToday = require('date-fns/startOfToday');
 
+const exp = require('./const');
+
 exports.date = function (time) {
   if (time === 'prev') {
     return formatISO(startOfYesterday(), { representation: 'date' })
@@ -71,7 +73,7 @@ exports.getDataChampionat = async function (date) {
     let result = '';
     if (json.matches.football.tournaments) {
       Object.entries(json.matches.football.tournaments).forEach(([key, value]) => {
-        if (!value.is_top) {
+        if (!value.is_top || !exp.champions.includes(value.name_tournament)) {
           return;
         }
         result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
