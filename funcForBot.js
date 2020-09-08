@@ -1,13 +1,14 @@
 const exp = require('./const');
+const keyBoards = require('./keyBoards');
 const func = require('./function');
 
 exports.mainMenu = async function(ctx) {
-  const options = exp.mainKeyboard;
+  const options = keyBoards.mainKeyboard;
   ctx.replyWithHTML('Выберите раздел в главном меню', options);
 }
 
 exports.getMatches = async function(ctx, time) {
-  const options = exp.mainKeyboard;
+  const options = keyBoards.mainKeyboard;
   try {
     const info = await func.getDataChampionat(func.date(time));
     ctx.replyWithHTML(info, options);
@@ -18,30 +19,30 @@ exports.getMatches = async function(ctx, time) {
 }
 
 exports.stepSelectCountry = async function(ctx) {
-  const options = exp.countryKeyboard;
+  const options = keyBoards.countryKeyboard;
   try {
     ctx.replyWithHTML('Выберите чемпионат', options);
   } catch (e) {
-    ctx.reply('Ошибка', exp.noneKeyboard);
+    ctx.reply('Ошибка', keyBoards.noneKeyboard);
     console.error(e);
   }
   return ctx.wizard.next();
 }
 
 exports.stepSelectViewResult = async function(ctx) {
-  const options = exp.viewResultKeyboard;
+  const options = keyBoards.viewResultKeyboard;
   ctx.session.country = ctx.match.input;
   try {
     ctx.replyWithHTML('Выбери вид результата', options);
   } catch (e) {
-    ctx.reply('Ошибка', exp.noneKeyboard);
+    ctx.reply('Ошибка', keyBoards.noneKeyboard);
     console.error(e);
   }
   return ctx.wizard.next();
 }
 
 exports.outputResult = async function(ctx) {
-  const options = exp.mainKeyboard;
+  const options = keyBoards.mainKeyboard;
   try {
     const countryCode = exp.countryCode[ctx.session.country];
     const viewResultCode = exp.viewResultCode[ctx.match.input];
