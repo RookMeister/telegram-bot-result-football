@@ -76,16 +76,21 @@ exports.getDataChampionat = async function (date) {
         if (!value.is_top || !exp.champions.includes(value.name_tournament)) {
           return;
         }
-        result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
+        
+        let matches = '';
         value.matches.forEach(el => {
           if (el.teams[0].name && el.teams[1].name) {
             if (el.result) {
-              result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
+              matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
             } else {
-              result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : el.status}\r\n`;
+              matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : el.status}\r\n`;
             }
           }
         });
+        if (matches) {
+          result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
+          result += matches;
+        }
       });
     } else {
       result += 'Нет данных';
