@@ -78,10 +78,12 @@ exports.getDataChampionat = async function (date) {
         }
         result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
         value.matches.forEach(el => {
-          if (el.result) {
-            result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
-          } else {
-            result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : el.status}\r\n`;
+          if (el.teams[0].name && el.teams[1].name) {
+            if (el.result) {
+              result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
+            } else {
+              result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : el.status}\r\n`;
+            }
           }
         });
       });
