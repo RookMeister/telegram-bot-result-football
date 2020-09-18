@@ -1,6 +1,7 @@
 const exp = require('./const');
 const keyBoards = require('./keyBoards');
 const func = require('./function');
+const returnDate = require('./date');
 
 exports.mainMenu = async function(ctx) {
   const options = keyBoards.mainKeyboard;
@@ -8,9 +9,9 @@ exports.mainMenu = async function(ctx) {
 }
 
 exports.getMatches = async function(ctx, time) {
-  const options = keyBoards.mainKeyboard;
+  const options = keyBoards.mainKeyboard();
   try {
-    const info = await func.getDataChampionat(func.date(time));
+    const info = await func.getDataChampionat(returnDate(time));
     ctx.replyWithHTML(info, options);
   } catch (e) {
     ctx.reply('Ошибка');

@@ -8,19 +8,19 @@ class keyBoards {
   }
 
   mainKeyboard() {
-    return Markup.keyboard(this.mainMenu).oneTime().removeKeyboard().resize().extra();
+    return Markup.keyboard(this.mainMenu).oneTime().resize().extra();
   }
 
   countryKeyboard() {
-    Markup.keyboard([this.country]).oneTime().removeKeyboard().resize().extra();
+    return Markup.keyboard([this.country]).oneTime().removeKeyboard().resize().extra();
   }
 
   viewResultKeyboard() {
-    Markup.keyboard([this.viewResult]).oneTime().removeKeyboard().resize().extra();
+    return Markup.keyboard([this.viewResult]).oneTime().removeKeyboard().resize().extra();
   }
 
   noneKeyboard() {
-    Markup.keyboard(['Главное меню']).oneTime().removeKeyboard().resize().extra();
+    return Markup.keyboard(['Главное меню']).oneTime().removeKeyboard().resize().extra();
   }
 }
 

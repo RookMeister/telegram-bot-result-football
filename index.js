@@ -3,7 +3,6 @@
 require('dotenv').config();
 
 const exp = require('./const');
-const func = require('./function');
 const botFunc = require('./funcForBot');
 
 const Telegraf = require('telegraf');
