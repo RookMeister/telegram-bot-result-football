@@ -4,7 +4,7 @@ const func = require('./function');
 const returnDate = require('./date');
 
 exports.mainMenu = async function(ctx) {
-  const options = keyBoards.mainKeyboard;
+  const options = keyBoards.mainKeyboard();
   ctx.replyWithHTML('Выберите раздел в главном меню', options);
 }
 
@@ -20,7 +20,7 @@ exports.getMatches = async function(ctx, time) {
 }
 
 exports.stepSelectCountry = async function(ctx) {
-  const options = keyBoards.countryKeyboard;
+  const options = keyBoards.countryKeyboard();
   try {
     ctx.replyWithHTML('Выберите чемпионат', options);
   } catch (e) {
@@ -31,7 +31,7 @@ exports.stepSelectCountry = async function(ctx) {
 }
 
 exports.stepSelectViewResult = async function(ctx) {
-  const options = keyBoards.viewResultKeyboard;
+  const options = keyBoards.viewResultKeyboard();
   ctx.session.country = ctx.match.input;
   try {
     ctx.replyWithHTML('Выбери вид результата', options);
@@ -43,7 +43,7 @@ exports.stepSelectViewResult = async function(ctx) {
 }
 
 exports.outputResult = async function(ctx) {
-  const options = keyBoards.mainKeyboard;
+  const options = keyBoards.mainKeyboard();
   try {
     const countryCode = exp.countryCode[ctx.session.country];
     const viewResultCode = exp.viewResultCode[ctx.match.input];

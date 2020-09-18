@@ -3,8 +3,8 @@ const Markup = require('telegraf/markup');
 class keyBoards {
   constructor() {
     this.mainMenu = [[{ text: 'Вчера'}, { text: 'Сегодня'}, { text: 'Завтра'}], [{ text: 'Чемпионаты'}]];
-    this.viewResult = [{ text: 'Турнирная таблица'}, { text: 'Результаты'}, { text: 'Календарь'}];
-    this.country = [{ text: '🇷🇺' }, { text: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' }, { text: '🇪🇸' }, { text: '🇮🇹' }, { text: '🇩🇪' }, { text: '🇫🇷' }];
+    this.viewResult = [[{ text: 'Турнирная таблица'}, { text: 'Результаты'}, { text: 'Календарь'}]];
+    this.country = [[{ text: '🇷🇺' }, { text: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' }, { text: '🇪🇸' }, { text: '🇮🇹' }, { text: '🇩🇪' }, { text: '🇫🇷' }]];
   }
 
   mainKeyboard() {
@@ -12,11 +12,11 @@ class keyBoards {
   }
 
   countryKeyboard() {
-    return Markup.keyboard([this.country]).oneTime().removeKeyboard().resize().extra();
+    return Markup.keyboard(this.country).oneTime().removeKeyboard().resize().extra();
   }
 
   viewResultKeyboard() {
-    return Markup.keyboard([this.viewResult]).oneTime().removeKeyboard().resize().extra();
+    return Markup.keyboard(this.viewResult).oneTime().removeKeyboard().resize().extra();
   }
 
   noneKeyboard() {
