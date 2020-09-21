@@ -1,7 +1,8 @@
 const exp = require('./const');
-const keyBoards = require('./keyBoards');
-const func = require('./function');
-const returnDate = require('./date');
+const key = require('./keyBoards');
+const func = require('./api/function');
+const returnDate = require('./utils/date');
+const keyBoards = new key();
 
 exports.mainMenu = async function(ctx) {
   const options = keyBoards.mainKeyboard();

@@ -2,8 +2,8 @@
 
 require('dotenv').config();
 
-const exp = require('./const');
-const botFunc = require('./funcForBot');
+const exp = require('./bot/const');
+const actions = require('./bot/actions');
 
 const Telegraf = require('telegraf');
 const Session = require('telegraf/session');
@@ -17,9 +17,9 @@ const stepCountry = new Composer();
 const stepViewResult = new Composer();
 
 const superWizard = new WizardScene('super-wizard',
-  async (ctx) =>  await botFunc.stepSelectCountry(ctx),
-  stepCountry.hears(exp.regexpContry, async (ctx) => await botFunc.stepSelectViewResult(ctx)),
-  stepViewResult.hears(exp.regexpViewResult, async (ctx) => await botFunc.outputResult(ctx)),
+  async (ctx) =>  await actions.stepSelectCountry(ctx),
+  stepCountry.hears(exp.regexpContry, async (ctx) => await actions.stepSelectViewResult(ctx)),
+  stepViewResult.hears(exp.regexpViewResult, async (ctx) => await actions.outputResult(ctx)),
 );
 
 const stage = new Stage([superWizard]);
@@ -29,11 +29,11 @@ bot.use(stage.middleware());
 stepCountry.use((ctx) => ctx.replyWithMarkdown('Введите флаг чемпионата'));
 stepViewResult.use((ctx) => ctx.replyWithMarkdown('Введите вид результата'));
 
-bot.command('start', async (ctx) => await botFunc.mainMenu(ctx));
-bot.hears('Главное меню', async (ctx) => await botFunc.mainMenu(ctx));
+bot.command('start', async (ctx) => await actions.mainMenu(ctx));
+bot.hears('Главное меню', async (ctx) => await actions.mainMenu(ctx));
 bot.hears('Чемпионаты', (ctx) => ctx.scene.enter('super-wizard'));
-bot.hears('Завтра', async (ctx) => await botFunc.getMatches(ctx, 'next'));
-bot.hears('Сегодня', async (ctx) => await botFunc.getMatches(ctx, 'now'));
-bot.hears('Вчера', async (ctx) => await botFunc.getMatches(ctx, 'prev'));
+bot.hears('Завтра', async (ctx) => await actions.getMatches(ctx, 'next'));
+bot.hears('Сегодня', async (ctx) => await actions.getMatches(ctx, 'now'));
+bot.hears('Вчера', async (ctx) => await actions.getMatches(ctx, 'prev'));
 
 bot.launch();

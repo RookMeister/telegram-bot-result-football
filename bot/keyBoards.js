@@ -1,6 +1,6 @@
 const Markup = require('telegraf/markup');
 
-class keyBoards {
+module.exports = class keyBoards {
   constructor() {
     this.mainMenu = [[{ text: 'Вчера'}, { text: 'Сегодня'}, { text: 'Завтра'}], [{ text: 'Чемпионаты'}]];
     this.viewResult = [[{ text: 'Турнирная таблица'}, { text: 'Результаты'}, { text: 'Календарь'}]];
@@ -23,8 +23,6 @@ class keyBoards {
     return Markup.keyboard(['Главное меню']).oneTime().removeKeyboard().resize().extra();
   }
 }
-
-module.exports = new keyBoards();
 
 // exports.mainButton = Markup.inlineKeyboard([
   // [Markup.callbackButton('🏴󠁧󠁢󠁥󠁮󠁧󠁿', 52)],

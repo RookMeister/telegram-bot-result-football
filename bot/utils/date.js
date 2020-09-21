@@ -3,7 +3,7 @@ const startOfTomorrow = require('date-fns/startOfTomorrow');
 const startOfYesterday = require('date-fns/startOfYesterday');
 const startOfToday = require('date-fns/startOfToday');
 
-module.exports = function (time) {
+module.exports = (time) => {
   if (time === 'prev') {
     return formatISO(startOfYesterday(), { representation: 'date' })
   } else if (time === 'next') {
