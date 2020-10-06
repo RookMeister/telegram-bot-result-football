@@ -1,15 +1,18 @@
 const exp = require('./const');
-const func = require('./function');
+const key = require('./keyBoards');
+const func = require('./api/function');
+const returnDate = require('./utils/date');
+const keyBoards = new key();
 
 exports.mainMenu = async function(ctx) {
-  const options = exp.mainKeyboard;
+  const options = keyBoards.mainKeyboard();
   ctx.replyWithHTML('Выберите раздел в главном меню', options);
 }
 
 exports.getMatches = async function(ctx, time) {
-  const options = exp.mainKeyboard;
+  const options = keyBoards.mainKeyboard();
   try {
-    const info = await func.getDataChampionat(func.date(time));
+    const info = await func.getDataChampionat(returnDate(time));
     ctx.replyWithHTML(info, options);
   } catch (e) {
     ctx.reply('Ошибка');
@@ -18,30 +21,30 @@ exports.getMatches = async function(ctx, time) {
 }
 
 exports.stepSelectCountry = async function(ctx) {
-  const options = exp.countryKeyboard;
+  const options = keyBoards.countryKeyboard();
   try {
     ctx.replyWithHTML('Выберите чемпионат', options);
   } catch (e) {
-    ctx.reply('Ошибка', exp.noneKeyboard);
+    ctx.reply('Ошибка', keyBoards.noneKeyboard);
     console.error(e);
   }
   return ctx.wizard.next();
 }
 
 exports.stepSelectViewResult = async function(ctx) {
-  const options = exp.viewResultKeyboard;
+  const options = keyBoards.viewResultKeyboard();
   ctx.session.country = ctx.match.input;
   try {
     ctx.replyWithHTML('Выбери вид результата', options);
   } catch (e) {
-    ctx.reply('Ошибка', exp.noneKeyboard);
+    ctx.reply('Ошибка', keyBoards.noneKeyboard);
     console.error(e);
   }
   return ctx.wizard.next();
 }
 
 exports.outputResult = async function(ctx) {
-  const options = exp.mainKeyboard;
+  const options = keyBoards.mainKeyboard();
   try {
     const countryCode = exp.countryCode[ctx.session.country];
     const viewResultCode = exp.viewResultCode[ctx.match.input];

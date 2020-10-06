@@ -1,20 +1,37 @@
 const fetch = require('node-fetch');
 const stringTable = require('string-table');
-const formatISO = require('date-fns/formatISO');
-const startOfTomorrow = require('date-fns/startOfTomorrow');
-const startOfYesterday = require('date-fns/startOfYesterday');
-const startOfToday = require('date-fns/startOfToday');
 
-const exp = require('./const');
-
-exports.date = function (time) {
-  if (time === 'prev') {
-    return formatISO(startOfYesterday(), { representation: 'date' })
-  } else if (time === 'next') {
-    return formatISO(startOfTomorrow(), { representation: 'date' })
-  }
-  return formatISO(startOfToday(), { representation: 'date' });
-}
+// Championats
+const champions =  [
+  // Россия
+  'Россия - Премьер-Лига',
+  'Кубок России',
+  //Англия
+  'Англия - Премьер-лига',
+  'Кубок Англии',
+  'Суперкубок Англии',
+  'Англия - Кубок лиги',
+  // Германия
+  'Суперкубок Германии',
+  'Германия - Бундеслига',
+  'Кубок Германии',
+  // Италия
+  'Суперкубок Италии',
+  'Кубок Италии',
+  'Италия - Серия А',
+  // Испания
+  'Испания - Примера',
+  'Суперкубок Испании',
+  // Франция
+  'Франция - Лига 1',
+  'Суперкубок Франции',
+  // Европа
+  'Лига чемпионов',
+  'Лига Европы',
+  // Сборные
+  'Товарищеские матчи (сборные)',
+  'Лига наций УЕФА',
+];
 
 // API Sports
 exports.returnApiSports = function (countryNumber, viewResult) {
@@ -73,17 +90,23 @@ exports.getDataChampionat = async function (date) {
     let result = '';
     if (json.matches.football.tournaments) {
       Object.entries(json.matches.football.tournaments).forEach(([key, value]) => {
-        if (!value.is_top || !exp.champions.includes(value.name_tournament)) {
+        if (!value.is_top || !champions.includes(value.name_tournament)) {
           return;
         }
-        result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
+        let matches = '';
         value.matches.forEach(el => {
-          if (el.result) {
-            result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
-          } else {
-            result += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : el.status}\r\n`;
+          if (el.teams[0].name && el.teams[1].name) {
+            if (el.result) {
+              matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
+            } else {
+              matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : el.status}\r\n`;
+            }
           }
         });
+        if (matches) {
+          result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
+          result += matches;
+        }
       });
     } else {
       result += 'Нет данных';
@@ -97,3 +120,4 @@ exports.getDataChampionat = async function (date) {
     return 'Ошибка';
   }
 }
+
