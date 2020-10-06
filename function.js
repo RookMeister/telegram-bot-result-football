@@ -88,6 +88,9 @@ exports.getDataChampionat = async function (date) {
     } else {
       result += 'Нет данных';
     }
+    if (!result) {
+      result = 'Нет подходящих матчей'
+    }
     return result;
   } catch (err) {
     console.error('Fail to fetch data: ' + err);
