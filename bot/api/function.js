@@ -90,22 +90,24 @@ exports.getDataChampionat = async function (date) {
     let result = '';
     if (json.matches.football.tournaments) {
       Object.entries(json.matches.football.tournaments).forEach(([key, value]) => {
-        if (!value.is_top || !champions.includes(value.name_tournament)) {
-          return;
-        }
-        let matches = '';
-        value.matches.forEach(el => {
-          if (el.teams[0].name && el.teams[1].name) {
-            if (el.result) {
-              matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
-            } else {
-              matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : el.status}\r\n`;
+        const isTop = value.is_top;
+        const nameTournament = value.name_tournament || value.name;
+        if (champions.includes(nameTournament) || isTop) {
+          let matches = '';
+          value.matches.forEach(el => {
+            if (el.teams[0].name && el.teams[1].name) {
+              if (el.result) {
+                matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
+              } else {
+                matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.time ? '(' + el.time +' - мск. время)' : el.status}\r\n`;
+              }
             }
+          });
+        
+          if (matches) {
+            result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
+            result += matches;
           }
-        });
-        if (matches) {
-          result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
-          result += matches;
         }
       });
     } else {
