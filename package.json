@@ -20,6 +20,7 @@
   "dependencies": {
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
+    "mongoose": "^5.10.9",
     "node-fetch": "^2.6.0",
     "string-table": "^0.1.5",
     "telegraf": "^3.38.0"

@@ -103,7 +103,6 @@ exports.getDataChampionat = async function (date) {
               }
             }
           });
-        
           if (matches) {
             result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
             result += matches;
