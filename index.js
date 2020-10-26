@@ -57,7 +57,7 @@ mongoose.connection.on('open', () => {
   setInterval(async () => {
     const hours = getHours(new Date());
     console.log('Час - ' + hours)
-    if (hours === 0) {
+    if (hours === 21) {
       const users = await User.find({});
       if (users.length) {
         users.forEach(el => {
@@ -65,5 +65,5 @@ mongoose.connection.on('open', () => {
         });
       }
     }
-  }, 1800000);
+  }, 3600000);
 })
