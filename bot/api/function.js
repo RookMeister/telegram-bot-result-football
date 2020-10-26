@@ -92,7 +92,7 @@ exports.getDataChampionat = async function (date) {
       Object.entries(json.matches.football.tournaments).forEach(([key, value]) => {
         const isTop = value.is_top;
         const nameTournament = value.name_tournament || value.name;
-        if (champions.includes(nameTournament) || isTop) {
+        if (champions.includes(nameTournament)) {
           let matches = '';
           value.matches.forEach(el => {
             if (el.teams[0].name && el.teams[1].name) {
