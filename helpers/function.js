@@ -95,15 +95,17 @@ async function getOriginalData(date, subscriptions) {
         const nameTournament = value.name_tournament || value.name;
         if (subscriptions.includes(nameTournament)) {
           let matches = '';
+          let isAllFinish = true;
           value.matches.forEach(el => {
             if (el.teams[0].name && el.teams[1].name) {
               if (el.result && el.status === 'Окончен') {
                 matches += `${el.teams[0].name} \u2014 ${el.teams[1].name} ${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`;
               } else {
-                return null
+                isAllFinish = false
               }
             }
           });
+          matches = isAllFinish ? matches : '';
           if (matches) {
             result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
             result += matches;
