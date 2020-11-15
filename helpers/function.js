@@ -2,76 +2,41 @@ const fetch = require('node-fetch');
 const stringTable = require('string-table');
 const User = require('../models/user');
 
-// Championats
-const champions =  [
-  // Россия
-  'Россия - Премьер-Лига',
-  'Кубок России',
-  //Англия
-  'Англия - Премьер-лига',
-  'Кубок Англии',
-  'Суперкубок Англии',
-  'Англия - Кубок лиги',
-  // Германия
-  'Суперкубок Германии',
-  'Германия - Бундеслига',
-  'Кубок Германии',
-  // Италия
-  'Суперкубок Италии',
-  'Кубок Италии',
-  'Италия - Серия А',
-  // Испания
-  'Испания - Примера',
-  'Суперкубок Испании',
-  // Франция
-  'Франция - Лига 1',
-  'Суперкубок Франции',
-  // Европа
-  'Лига чемпионов',
-  'Лига Европы',
-  // Сборные
-  'Товарищеские матчи (сборные)',
-  'Лига наций УЕФА',
-];
-
-// API Sports
-function returnApiSports(countryNumber, viewResult) {
+// URL Sports
+function returnUrlSports(countryNumber, viewResult) {
   return `https://www.sports.ru/core/stat/gadget/${viewResult}/?args={%22tournament_id%22:${countryNumber}}`;
 }
 
-// API Championat
-function returnApiChampionat(date) {
+// URL Championat
+function returnUrlChampionat(date) {
   return `https://www.championat.com/stat/football/${date}.json`;
+}
+
+async function getMatches(url) {
+  const data = await fetch(url);
+  const json = data.json();
+  return json
 }
 
 // Определение функции получения данных и возврат отформатированной :
 async function getDataSports(championat) {
   try {
-    const url = returnApiSports(championat.country, championat.view);
-    const data = await fetch(url);
-    const json = await data.json();
     let result = '';
+    const data = await getMatches(returnApiSports(championat.country, championat.view));
     if (championat.view === 'tournament_table') {
       const table = [];
-      json.tournament_table[0].list.forEach(element => {
-        // result +=`<b>${element.place} место</b> \u2014 <i>${element.team_info.name}</i> | ${element.score}\r\n`;
+      data.tournament_table[0].list.forEach(element => {
         table.push({Место: element.place, Команда: element.team_info.name, Очки: element.score})
       });
       result = `<pre>${stringTable.create(table)}</pre>`;
     } else {
-      if (json.match_list.length) {
-        json.match_list.forEach(element => {
+      if (data.match_list.length) {
+        data.match_list.forEach(element => {
           result += `\r\n<i>${element.title}</i>\r\n\r\n`;
-          if (element.matches.length) {
-            element.matches.forEach(el => {
-              if (championat.view === 'last_matches') {
-                result += `${el.first_team.name} \u2014 ${el.second_team.name}  ${el.first_team.goals}:${el.second_team.goals}\r\n`;
-              }
-              else {
-                result += `${el.first_team.name} \u2014 ${el.second_team.name} (${el.start_time.time} - мск. время)\r\n`;
-              }
-            });
-          }
+          element.matches.forEach(el => {
+            result += `${el.first_team.name} \u2014 ${el.second_team.name} `;
+            result += (championat.view === 'last_matches') ? `${el.first_team.goals}:${el.second_team.goals}\r\n` : `(${el.start_time.time} - мск. время)\r\n`;
+          });
         });
       } else {
         result += 'Нет данных';
@@ -86,16 +51,15 @@ async function getDataSports(championat) {
 
 async function getOriginalData(date, subscriptions) {
   try {
-    const url = returnApiChampionat(date);
-    const data = await fetch(url);
-    const json = await data.json();
     let result = '';
-    if (json.matches.football.tournaments) {
-      Object.entries(json.matches.football.tournaments).forEach(([key, value]) => {
+    const data = await getMatches(returnApiChampionat(date));
+    const tournaments =data.matches.football.tournaments;
+    let isAllFinish = true;
+    if (tournaments) {
+      Object.entries(data.matches.football.tournaments).forEach(([key, value]) => {
         const nameTournament = value.name_tournament || value.name;
         if (subscriptions.includes(nameTournament)) {
           let matches = '';
-          let isAllFinish = true;
           value.matches.forEach(el => {
             if (el.teams[0].name && el.teams[1].name) {
               if (el.result && el.status === 'Окончен') {
@@ -105,7 +69,6 @@ async function getOriginalData(date, subscriptions) {
               }
             }
           });
-          matches = isAllFinish ? matches : '';
           if (matches) {
             result += `\r\n<b><i>${value.name}</i></b>\r\n\r\n`;
             result += matches;
@@ -113,12 +76,9 @@ async function getOriginalData(date, subscriptions) {
         }
       });
     } else {
-      return null;
+      isAllFinish = false;
     }
-    if (!result) {
-      result = null
-    }
-    return result;
+    return (isAllFinish) ? result : null;
   } catch (err) {
     console.error('Fail to fetch data: ' + err);
     return 'Ошибка';
