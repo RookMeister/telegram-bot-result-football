@@ -22,7 +22,7 @@ async function getMatches(url) {
 async function getDataSports(championat) {
   try {
     let result = '';
-    const data = await getMatches(returnApiSports(championat.country, championat.view));
+    const data = await getMatches(returnUrlSports(championat.country, championat.view));
     if (championat.view === 'tournament_table') {
       const table = [];
       data.tournament_table[0].list.forEach(element => {
@@ -52,7 +52,7 @@ async function getDataSports(championat) {
 async function getOriginalData(date, subscriptions) {
   try {
     let result = '';
-    const data = await getMatches(returnApiChampionat(date));
+    const data = await getMatches(returnUrlChampionat(date));
     const tournaments =data.matches.football.tournaments;
     let isAllFinish = true;
     if (tournaments) {
@@ -88,7 +88,7 @@ async function getOriginalData(date, subscriptions) {
 async function getDataChampionat(date, chat_id) {
   try {
     const user = await User.findOne({chat_id}).exec();
-    const url = returnApiChampionat(date);
+    const url = returnUrlChampionat(date);
     const data = await fetch(url);
     const json = await data.json();
     let result = '';
