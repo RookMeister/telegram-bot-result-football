@@ -18,6 +18,31 @@ async function getMatches(url) {
   return json
 }
 
+async function getDataSports1(championat) {
+  try {
+    const data = await getMatches(returnUrlSports(championat.country, championat.view));
+    if (championat.view === 'tournament_table') {
+      const table = [];
+      data.tournament_table[0].list.forEach(element => {
+        table.push({Место: element.place, Команда: element.team_info.name, Очки: element.score})
+      });
+      return table;
+    } else {
+      const matches = [];
+      data.match_list.length && data.match_list.forEach(element => {
+        matches.push({title: element.title})
+        element.matches.forEach(el => {
+          matches.push({firstTeam: el.first_team, secondTeam: el.second_team, startTime: el.start_time})
+        });
+      });
+      return matches
+    }
+  } catch (err) {
+    console.error(err);
+    return 'Ошибка';
+  }
+}
+
 // Определение функции получения данных и возврат отформатированной :
 async function getDataSports(championat) {
   try {
@@ -125,6 +150,26 @@ async function getDataChampionat(date, chat_id) {
     return 'Ошибка';
   }
 }
+
+async function getDataChampionat1(date) {
+  try {
+    const data = await getMatches(returnUrlChampionat(date));
+    const tournaments = data.matches.football.tournaments;
+    const matches = [];
+    tournaments && Object.entries(tournaments).forEach(([key, value]) => {
+      // const nameTournament = value.name_tournament || value.name;
+      matches.push({title: value.name})
+      value.matches.forEach(el => {
+        matches.push({firstTeam: el.teams[0], secondTeam: el.teams[1], startTime: el.time , result: el.result, status: el.status, group: el.group})
+      });
+    });
+    return matches
+  } catch (err) {
+    console.error(err);
+    return 'Ошибка';
+  }
+}
+
 
 // Exports
 module.exports = {
