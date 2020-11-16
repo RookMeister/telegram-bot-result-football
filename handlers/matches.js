@@ -10,9 +10,7 @@ function setupMatches(bot) {
 }
 
 async function getMatches(ctx, date) {
-  const chatId = ctx.message && ctx.message.chat && ctx.message.chat.id;
-  ctx.session.chatId = (chatId) ? chatId : ctx.session.chatId;
-  const info = await getDataChampionat(date ? date : returnDate('now'), ctx.session.chatId);
+  const info = await getDataChampionat(date ? date : returnDate('now'), ctx.chat.id);
   const options = footballScoresKeyBoardInline;
   options.parse_mode = 'HTML';
   if (date) {

@@ -12,7 +12,7 @@ const { startScheduler } = require('./handlers/scheduler')
 
 setupMongoose();
 
-startMiddelware();
+// startMiddelware();
 
 setupStart(bot);
 setupMatches(bot);
