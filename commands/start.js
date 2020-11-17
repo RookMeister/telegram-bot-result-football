@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { mainKeyboard } = require('../helpers/keyBoards');
+const { mainKeyboard } = require('../utils/keyBoards');
 
 
 function setupStart(bot) {

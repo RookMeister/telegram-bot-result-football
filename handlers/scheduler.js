@@ -1,5 +1,5 @@
-const { getOriginalData } = require('../helpers/function')
-const returnDate = require('../helpers/date');
+const { getData } = require('../utils/helpers')
+const returnDate = require('../utils/date');
 const User = require('../models/user');
 
 async function startScheduler(bot) {
