@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
-const returnDate = require('./date');
+const { dayToIso, isPastDate} = require('./date');
+const stringTable = require('string-table');
 
 // URL Sports
 function returnUrlSports({country, view}) {
@@ -8,7 +9,7 @@ function returnUrlSports({country, view}) {
 
 // URL Championat
 function returnUrlChampionat({date}) {
-  const stringDate = returnDate(date)
+  const stringDate = dayToIso(date)
   return `https://www.championat.com/stat/football/${stringDate}.json`;
 }
 
@@ -62,8 +63,55 @@ function getDataChampionat(data) {
   }
 }
 
+function dataConversionChampionat(data, subscriptions) {
+  try {
+    if (!data && subscriptions.length)  return 'Ошибка';
+    let string = '';
+    data.forEach(el => {
+      if (!subscriptions.includes(el.championat)) return;
+      if (el.title) {
+        string += `\r\n<i>${el.title}</i>\r\n\r\n`;
+      } else {
+        string += `${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
+        string += (el.result)
+                    ? `${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`
+                    : `${el.startTime ? '(' + el.startTime +' - мск. время)' : el.status}\r\n`;
+      }
+    });
+    return string || 'Нет подходящих матчей';
+  } catch (err) {
+    console.error(err);
+    return 'Ошибка';
+  }
+}
+
+function dataConversionSports(data, result) {
+  try {
+    if (!data && !result)  return 'Ошибка';
+    if (result === 'tournament_table') {
+      return `<pre>${stringTable.create(data)}</pre>`;
+    } else {
+      let string = '';
+      data.forEach(el => {
+        if (el.title) {
+        string += `\r\n<i>${el.title}</i>\r\n\r\n`;
+        } else {
+          string += `${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
+          string += (isPastDate(el.startTime.full)) ? `${el.firstTeam.goals}:${el.secondTeam.goals}\r\n` : `(${el.startTime.time} - мск. время)\r\n`;
+        }
+      });
+      return string;
+    }
+  } catch (err) {
+    console.error(err);
+    return 'Ошибка';
+  }
+}
+
 // Exports
 module.exports = {
   getData,
+  dataConversionSports,
+  dataConversionChampionat,
 }
 

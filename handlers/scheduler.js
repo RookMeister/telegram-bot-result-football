@@ -8,18 +8,20 @@ async function startScheduler(bot) {
     const users = await User.find({});
     if (users.length) {
       users.forEach(async (el) => {
-        const data = await getOriginalData(returnDate('now'), el.subscriptions)
-        if (data && !isSend) {
-          console.log(`Отправилось ${el.username}`)
-          sendMessage(bot.telegram, el.chat_id, data);
-          isSend = true;
-        } else if (!data) {
-          isSend = false;
-        }
+        const data = await getData('championat', { date: 'now' });
+        const info = dataConversion(data, el.subscriptions);
+        // if (data && !isSend) {
+        //   console.log(`Отправилось ${el.username}`)
+        //   sendMessage(bot.telegram, el.chat_id, data);
+        //   isSend = true;
+        // } else if (!data) {
+        //   isSend = false;
+        // }
       });
     }
   }, 600000);
 }
+
 
 async function sendMessage(ctx, chat, info) {
   try {
