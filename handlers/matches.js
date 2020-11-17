@@ -9,13 +9,35 @@ function setupMatches(bot) {
 }
 
 async function getMatches(ctx, date, editMessage) {
-  const info = await getData('championat', { date });
+  const data = await getData('championat', { date });
   const options = footballScoresKeyBoardInline;
+  const info = dataConversion(data, ctx.match.input);
   options.parse_mode = 'HTML';
   if (editMessage) {
     // ctx.editMessageText(info, options);
   } else {
     // ctx.replyWithHTML(info, options);
+  }
+}
+
+function dataConversion(data, subscriptions) {
+  try {
+    if (!data && subscriptions.length)  return 'Ошибка';
+    let string = '';
+    data.forEach(el => {
+      if (el.title) {
+        string += `\r\n<i>${el.title}</i>\r\n\r\n`;
+      } else if(subscriptions.includes(el.championat)) {
+        string += `${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
+        string += (el.result)
+                    ? `${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`
+                    : `${el.startTime ? '(' + el.startTime +' - мск. время)' : el.status}\r\n`;
+      }
+    });
+    return string;
+  } catch (err) {
+    console.error(err);
+    return 'Ошибка';
   }
 }
 

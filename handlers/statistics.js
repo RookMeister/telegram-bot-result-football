@@ -31,21 +31,20 @@ async function getResult(ctx) {
 
 function dataConversion(data, result) {
   try {
-    if (data && result) {
-      if (result === 'tournament_table') {
-        return `<pre>${stringTable.create(data)}</pre>`;
-      } else {
-        let string = '';
-        data.forEach(el => {
-          if (el.title) {
-          string += `\r\n<i>${el.title}</i>\r\n\r\n`;
-          } else {
-            string += `${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
-            string += (isPast(parseISO(el.startTime.full))) ? `${el.firstTeam.goals}:${el.secondTeam.goals}\r\n` : `(${el.startTime.time} - мск. время)\r\n`;
-          }
-        });
-        return string;
-      }
+    if (!data && !result)  return 'Ошибка';
+    if (result === 'tournament_table') {
+      return `<pre>${stringTable.create(data)}</pre>`;
+    } else {
+      let string = '';
+      data.forEach(el => {
+        if (el.title) {
+        string += `\r\n<i>${el.title}</i>\r\n\r\n`;
+        } else {
+          string += `${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
+          string += (isPast(parseISO(el.startTime.full))) ? `${el.firstTeam.goals}:${el.secondTeam.goals}\r\n` : `(${el.startTime.time} - мск. время)\r\n`;
+        }
+      });
+      return string;
     }
   } catch (err) {
     console.error(err);
