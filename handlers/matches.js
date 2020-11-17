@@ -1,5 +1,6 @@
 const { footballScoresKeyBoardInline } = require('../utils/keyBoards');
 const { getData } = require('../utils/helpers')
+const User = require('../models/user');
 
 function setupMatches(bot) {
   bot.hears('Матч-центр', (ctx) => getMatches(ctx, 'now'));
@@ -11,12 +12,13 @@ function setupMatches(bot) {
 async function getMatches(ctx, date, editMessage) {
   const data = await getData('championat', { date });
   const options = footballScoresKeyBoardInline;
-  const info = dataConversion(data, ctx.match.input);
+  const user = await User.findOne({chat_id: ctx.chat.id}).exec();
+  const info = dataConversion(data, user.subscriptions);
   options.parse_mode = 'HTML';
   if (editMessage) {
-    // ctx.editMessageText(info, options);
+    ctx.editMessageText(info, options);
   } else {
-    // ctx.replyWithHTML(info, options);
+    ctx.replyWithHTML(info, options);
   }
 }
 
@@ -25,16 +27,17 @@ function dataConversion(data, subscriptions) {
     if (!data && subscriptions.length)  return 'Ошибка';
     let string = '';
     data.forEach(el => {
+      if (!subscriptions.includes(el.championat)) return;
       if (el.title) {
         string += `\r\n<i>${el.title}</i>\r\n\r\n`;
-      } else if(subscriptions.includes(el.championat)) {
+      } else {
         string += `${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
         string += (el.result)
                     ? `${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`
                     : `${el.startTime ? '(' + el.startTime +' - мск. время)' : el.status}\r\n`;
       }
     });
-    return string;
+    return string || 'Нет подходящих матчей';
   } catch (err) {
     console.error(err);
     return 'Ошибка';
