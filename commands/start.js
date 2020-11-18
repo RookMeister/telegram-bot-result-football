@@ -10,9 +10,9 @@ function setupStart(bot) {
 async function mainMenu(ctx) {
   const user = new User({
     username: ctx.message.chat.username,
-    chat_id: ctx.message.chat.id
+    chat_id: ctx.chat.id
   });
-  const userOld = await User.findOne({chat_id: ctx.message.chat.id}).exec();
+  const userOld = await User.findOne({chat_id: ctx.chat.id}).exec();
   if (!userOld) {
     user.save(function(err){
       if(err) return console.log(err);
@@ -22,7 +22,7 @@ async function mainMenu(ctx) {
 
   const keyBoardsInline = subscriptionAnswerKeyBoardInline;
   const keyBoards = mainKeyboard;
-  const options = { ...keyBoards, ...keyBoardsInline };
+  // const options = 
   ctx.reply(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей в соответствии с вашими подписками после окончания всех матчей. Добавить, удалить, а так же посмотреть свои подписки можете в разделе настройки. Вы не будете подписаны пока не нажмёте кнопку "Подписаться"!`, options);
 }
 

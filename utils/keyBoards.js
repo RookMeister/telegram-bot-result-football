@@ -11,7 +11,7 @@ const inInline = (array) => {
   return Markup.inlineKeyboard([[...key]]).extra();
 };
 
-const subscriptionAnswer = [ '✔Подписаться', '✖Не подписываться' ];
+const subscriptionAnswer = [ '✔Подписаться', '✖Отписаться' ];
 const footballScores = [ 'Вчера', 'Сегодня', 'Завтра' ];
 const countryCode = [
   { title: '🇷🇺', value: 31 },
@@ -27,7 +27,7 @@ const viewCode = [
   { title: 'Календарь', value: 'future_matches' },
 ];
 
-const mainKeyboard = Markup.keyboard([[{ text: ' Матч-центр'}, { text: 'Статистика'}]]).resize().extra();
+const mainKeyboard = Markup.keyboard([[{ text: ' Матч-центр'}, { text: 'Статистика'}],[{ text: '⚙️Настройки'}]]).resize().extra();
 
 const footballScoresKeyBoardInline = inInline(footballScores);
 const countryKeyBoardInline = inInline(countryCode);

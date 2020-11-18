@@ -9,6 +9,7 @@ const { setupStart } = require('./commands/start')
 const { setupMatches,  } = require('./handlers/matches')
 const { setupStat } = require('./handlers/statistics')
 const { startScheduler } = require('./handlers/scheduler')
+const { setupSubscribe } = require('./handlers/subscribe')
 
 setupMongoose();
 
@@ -18,5 +19,6 @@ setupStart(bot);
 setupMatches(bot);
 setupStat(bot);
 startScheduler(bot);
+setupSubscribe(bot);
 
 startBot();
