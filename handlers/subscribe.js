@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { subscriptionAnswerKeyBoardInline, mainKeyboard, } = require('../utils/keyBoards');
+const { mainKeyboard } = require('../utils/keyBoards');
 
 function setupSubscribe(bot) {
   bot.action('✔Подписаться', (ctx) => isSubscribe(ctx, true));
@@ -19,7 +19,8 @@ function isSubscribe(ctx, isSubscribe) {
   }
   ctx.answerCbQuery(string, true);
   const options = mainKeyboard;
-  ctx.editMessageText(`Выберите раздел в меню`);
+  ctx.deleteMessage(ctx.update.callback_query.message.message_id)
+  ctx.replyWithHTML('Выберите раздел в меню', options);
 }
 
 // Exports

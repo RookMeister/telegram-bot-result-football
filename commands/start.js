@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { subscriptionAnswerKeyBoardInline, mainKeyboard, } = require('../utils/keyBoards');
+const { subscriptionAnswerKeyBoardInline } = require('../utils/keyBoards');
 
 
 function setupStart(bot) {
@@ -20,10 +20,8 @@ async function mainMenu(ctx) {
     })
   }
 
-  const keyBoardsInline = subscriptionAnswerKeyBoardInline;
-  const keyBoards = mainKeyboard;
-  // const options = 
-  ctx.reply(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей в соответствии с вашими подписками после окончания всех матчей. Добавить, удалить, а так же посмотреть свои подписки можете в разделе настройки. Вы не будете подписаны пока не нажмёте кнопку "Подписаться"!`, options);
+  const options = subscriptionAnswerKeyBoardInline;
+  ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей в соответствии с вашими подписками после окончания всех матчей. Добавить, удалить, а так же посмотреть свои подписки можете в разделе настройки. Вы не будете подписаны пока не нажмёте кнопку "Подписаться"!`, options);
 }
 
 // Exports
