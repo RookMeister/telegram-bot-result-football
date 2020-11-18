@@ -18,7 +18,7 @@ async function getData(api, config) {
   const url = (api === 'sports') ? returnUrlSports(config) : returnUrlChampionat(config);
   const data = await fetch(url);
   const json = await data.json();
-  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json);
+  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, config.check);
   return result
 }
 
@@ -45,18 +45,22 @@ async function getDataSports(data) {
     return 'Ошибка';
   }
 }
-function getDataChampionat(data) {
+function getDataChampionat(data, checkEnd = false) {
   try {
     const tournaments = data.matches.football.tournaments;
     const matches = [];
-    tournaments && Object.entries(tournaments).forEach(([key, value]) => {
+    outer: for (const value of Object.values(tournaments)) {
       const nameTournament = value.name_tournament || value.name;
       matches.push({title: value.name, championat: nameTournament})
-      value.matches.forEach(el => {
+      for (const el of value.matches) {
+        if (checkEnd && el.raw_status === 'dns') {
+          matches.length = 0;
+          break outer;
+        }
         matches.push({firstTeam: el.teams[0], secondTeam: el.teams[1], startTime: el.time , result: el.result, status: el.status, group: el.group, championat: nameTournament})
-      });
-    });
-    return matches
+      }
+    }
+    return matches;
   } catch (err) {
     console.error(err);
     return 'Ошибка';
@@ -65,7 +69,7 @@ function getDataChampionat(data) {
 
 function dataConversionChampionat(data, subscriptions) {
   try {
-    if (!data && subscriptions.length)  return 'Ошибка';
+    if (!data && !!subscriptions.length)  return 'Ошибка';
     let string = '';
     data.forEach(el => {
       if (!subscriptions.includes(el.championat)) return;

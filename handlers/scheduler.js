@@ -1,5 +1,5 @@
 const { getData } = require('../utils/helpers')
-const returnDate = require('../utils/date');
+const { dataConversionChampionat } = require('../utils/helpers')
 const User = require('../models/user');
 
 async function startScheduler(bot) {
@@ -8,24 +8,24 @@ async function startScheduler(bot) {
     const users = await User.find({});
     if (users.length) {
       users.forEach(async (el) => {
-        const data = await getData('championat', { date: 'now' });
-        const info = dataConversion(data, el.subscriptions);
-        // if (data && !isSend) {
-        //   console.log(`Отправилось ${el.username}`)
-        //   sendMessage(bot.telegram, el.chat_id, data);
-        //   isSend = true;
-        // } else if (!data) {
-        //   isSend = false;
-        // }
+        const data = await getData('championat', { date: 'now', check: true });
+        let info = dataConversionChampionat(data, el.subscriptions);
+        info = (info === 'Нет подходящих матчей') ? '' : info;
+        if (info && !isSend) {
+          sendMessage(bot.telegram, el.chat_id, info);
+          isSend = true;
+        } else if (!info) {
+          isSend = false;
+        }
       });
     }
   }, 600000);
 }
 
 
-async function sendMessage(ctx, chat, info) {
+async function sendMessage(ctx, chatId, info) {
   try {
-    ctx.sendMessage(chat, info, {parse_mode: 'html'})
+    ctx.sendMessage(chatId, info, {parse_mode: 'html'})
   } catch (e) {
     console.error(e);
   }

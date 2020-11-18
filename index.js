@@ -17,6 +17,6 @@ startMiddelware();
 setupStart(bot);
 setupMatches(bot);
 setupStat(bot);
-// startScheduler(bot);
+startScheduler(bot);
 
 startBot();
