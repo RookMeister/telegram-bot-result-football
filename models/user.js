@@ -35,7 +35,8 @@ const champions =  [
 
 const UserSchema = new Schema({
 	username: String,
-	chat_id: Number,
+  chat_id: Number,
+  onScheduler: { type: Boolean, default: false },
 	subscriptions: { type: [String], default: champions },
 	createdAt: { type: String, default: new Date().toLocaleString('ru-RU', { hour12: false }) },
   likeClub: [String],
