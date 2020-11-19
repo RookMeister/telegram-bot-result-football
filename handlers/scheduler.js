@@ -11,7 +11,6 @@ async function startScheduler(bot) {
         const data = await getData('championat', { date: 'now', check: true });
         let info = dataConversionChampionat(data, el.subscriptions);
         info = (info === 'Нет подходящих матчей') ? '' : info;
-        console.log('scheduler', data)
         if (info && !isSend) {
           sendMessage(bot.telegram, el.chat_id, info);
           isSend = true;
