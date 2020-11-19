@@ -5,13 +5,13 @@ const User = require('../models/user');
 async function startScheduler(bot) {
   let isSend = false;
   setInterval(async () => {
-    console.log('scheduler')
     const users = await User.find({});
     if (users.length) {
       users.forEach(async (el) => {
         const data = await getData('championat', { date: 'now', check: true });
         let info = dataConversionChampionat(data, el.subscriptions);
         info = (info === 'Нет подходящих матчей') ? '' : info;
+        console.log('scheduler', data)
         if (info && !isSend) {
           sendMessage(bot.telegram, el.chat_id, info);
           isSend = true;
