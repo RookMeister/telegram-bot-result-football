@@ -5,6 +5,7 @@ const User = require('../models/user');
 async function startScheduler(bot) {
   let isSend = false;
   setInterval(async () => {
+    console.log(new Date())
     const users = await User.find({});
     if (users.length) {
       users.forEach(async (el) => {
