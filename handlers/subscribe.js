@@ -3,22 +3,18 @@ const { mainKeyboard } = require('../utils/keyBoards');
 
 function setupSubscribe(bot) {
   bot.action('✔Подписаться', (ctx) => isSubscribe(ctx, true));
-  bot.action('✖Отписаться', (ctx) => isSubscribe(ctx, false));
+  bot.action('✖Отказаться', (ctx) => isSubscribe(ctx));
 }
 
-function isSubscribe(ctx, isSubscribe) {
-  let string = '';
+function isSubscribe(ctx, isSubscribe = false) {
+  let string = 'Ты всегда можешь подписаться в Настройках';
   if (isSubscribe) {
-    string = 'Теперь раз в сутки, после окнчания матчей, вам будет приходить пуш с результатами тех чемпионатов на которые вы подписаны. Список можно посмотреть в настройках.'
-    User.findOneAndUpdate({chat_id: ctx.chat.id}, {onScheduler: true});
-  } else {
-    console.log(2);
-    string = 'Ты всегда можешь подписаться в Настройках';
-    User.findOneAndUpdate({chat_id: ctx.chat.id}, {onScheduler: false});
+    string = 'Теперь раз в сутки, после окончания матчей, вам будет приходить пуш с результатами тех чемпионатов на которые вы подписаны. Список можно посмотреть в настройках.'
+    User.findOneAndUpdate({chat_id: ctx.chat.id}, { onScheduler: true });
   }
   ctx.answerCbQuery(string, true);
   const options = mainKeyboard;
-  ctx.deleteMessage(ctx.update.callback_query.message.message_id)
+  // ctx.deleteMessage(ctx.update.callback_query.message.message_id)
   ctx.replyWithHTML('Выберите раздел в меню', options);
 }
 

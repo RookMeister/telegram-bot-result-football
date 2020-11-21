@@ -55,6 +55,7 @@ function getDataChampionat(data, subscriptions, checkEnd = false) {
       matches.push({title: value.name, championat: nameTournament})
       for (const el of value.matches) {
         if (checkEnd && el.raw_status === 'dns') {
+          console.log('scheduler', el.link_title, el.link);
           matches.length = 0;
           break outer;
         }
