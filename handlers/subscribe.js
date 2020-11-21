@@ -9,7 +9,6 @@ function setupSubscribe(bot) {
 function isSubscribe(ctx, isSubscribe) {
   let string = '';
   if (isSubscribe) {
-    console.log(1);
     string = 'Теперь раз в сутки, после окнчания матчей, вам будет приходить пуш с результатами тех чемпионатов на которые вы подписаны. Список можно посмотреть в настройках.'
     User.findOneAndUpdate({chat_id: ctx.chat.id}, {onScheduler: true});
   } else {

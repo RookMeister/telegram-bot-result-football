@@ -18,7 +18,7 @@ async function getData(api, config) {
   const url = (api === 'sports') ? returnUrlSports(config) : returnUrlChampionat(config);
   const data = await fetch(url);
   const json = await data.json();
-  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, config.check);
+  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, config.subscriptions, config.check);
   return result
 }
 
@@ -45,12 +45,13 @@ async function getDataSports(data) {
     return 'Ошибка';
   }
 }
-function getDataChampionat(data, checkEnd = false) {
+function getDataChampionat(data, subscriptions, checkEnd = false) {
   try {
     const tournaments = data.matches.football.tournaments;
     const matches = [];
     outer: for (const value of Object.values(tournaments)) {
       const nameTournament = value.name_tournament || value.name;
+      if (!subscriptions.includes(nameTournament)) return;
       matches.push({title: value.name, championat: nameTournament})
       for (const el of value.matches) {
         if (checkEnd && el.raw_status === 'dns') {
@@ -67,12 +68,11 @@ function getDataChampionat(data, checkEnd = false) {
   }
 }
 
-function dataConversionChampionat(data, subscriptions) {
+function dataConversionChampionat(data) {
   try {
     if (!data && !!subscriptions.length)  return 'Ошибка';
     let string = '';
     data.forEach(el => {
-      if (!subscriptions.includes(el.championat)) return;
       if (el.title) {
         string += `\r\n<i>${el.title}</i>\r\n\r\n`;
       } else {

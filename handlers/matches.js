@@ -11,10 +11,10 @@ function setupMatches(bot) {
 }
 
 async function getMatches(ctx, date, editMessage) {
-  const data = await getData('championat', { date });
-  const options = footballScoresKeyBoardInline;
   const user = await User.findOne({chat_id: ctx.chat.id}).exec();
-  const info = dataConversionChampionat(data, user.subscriptions);
+  const data = await getData('championat', { date, subscriptions: user.subscriptions });
+  const options = footballScoresKeyBoardInline;
+  const info = dataConversionChampionat(data);
   options.parse_mode = 'HTML';
   if (editMessage) {
     ctx.editMessageText(info, options);
