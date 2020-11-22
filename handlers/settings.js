@@ -1,9 +1,15 @@
-const { settingsKeyboard, subscribeAnswerKeyBoardInline, unSubscribeAnswerKeyBoardInline } = require('../utils/keyBoards');
+const { 
+  mainKeyboard,
+  settingsKeyboard,
+  subscribeAnswerKeyBoardInline,
+  unSubscribeAnswerKeyBoardInline
+} = require('../utils/keyBoards');
 const User = require('../models/user');
 
 function setupSettings(bot) {
   bot.hears('Настройки', (ctx) => showSettings(ctx));
   bot.hears('Подписки', (ctx) => subscribes(ctx));
+  bot.hears('🔙Назад', (ctx) => goBack(ctx));
 }
 
 function showSettings(ctx) {
@@ -24,6 +30,11 @@ async function subscribes(ctx) {
     options = subscribeAnswerKeyBoardInline
   }
   ctx.replyWithHTML(info, options);
+}
+
+function goBack(ctx) {
+  const options = mainKeyboard;
+  ctx.replyWithHTML('Перехожу в главное меню', options);
 }
 
 // Exports

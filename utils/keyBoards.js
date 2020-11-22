@@ -29,7 +29,7 @@ const viewCode = [
 ];
 
 const mainKeyboard = Markup.keyboard([[{ text: 'Матч-центр'}, { text: 'Статистика'}],[{ text: 'Настройки'}]]).resize().extra();
-const settingsKeyboard = Markup.keyboard([[{ text: 'Подписки'}],[{ text: 'Часовой пояс'}]]).resize().extra();
+const settingsKeyboard = Markup.keyboard([[{ text: 'Подписки'}],[{ text: '🔙Назад'}]]).resize().extra();
 
 const footballScoresKeyBoardInline = inInline(footballScores);
 const countryKeyBoardInline = inInline(countryCode);

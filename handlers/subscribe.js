@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { mainKeyboard } = require('../utils/keyBoards');
+const { subscribeAnswerKeyBoardInline, unSubscribeAnswerKeyBoardInline } = require('../utils/keyBoards');
 
 function setupSubscribe(bot) {
   bot.action('✔Подписаться', (ctx) => isSubscribe(ctx, true));
@@ -7,21 +7,25 @@ function setupSubscribe(bot) {
 }
 
 async function isSubscribe(ctx, isSubscribe = false) {
-  let string = 'Ты всегда можешь подписаться в Настройках';
+  let string = 'Ты всегда можешь подписаться';
+  let keyboard = '';
+  let info = '';
   if (isSubscribe) {
-    string = 'Теперь после окончания матчей, вам будет приходить пуш с результатами матчей. Отписаться можно в настройках';
+    info = 'Вы подписались';
+    string = 'Теперь после окончания матчей, вам будет приходить пуш с результатами матчей.';
     await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { onScheduler: true } }, function (err, data) {
       if (err) return console.log(err);
     });
+    keyboard = unSubscribeAnswerKeyBoardInline;
   } else {
     await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { onScheduler: false } }, function (err, data) {
       if (err) return console.log(err);
     });
+    info = 'Вы отписались';
+    keyboard = subscribeAnswerKeyBoardInline;
   }
-  ctx.answerCbQuery(string, true);
-  const options = mainKeyboard;
-  // ctx.deleteMessage(ctx.update.callback_query.message.message_id)
-  ctx.replyWithHTML('Выберите раздел в меню', options);
+  ctx.answerCbQuery(info, false);
+  ctx.editMessageText(string, keyboard);
 }
 
 // Exports
