@@ -17,9 +17,9 @@ async function mainMenu(ctx) {
   if (!userOld) {
     user.save(function(err){
       if(err) return console.log(err);
-      options = subscribeAnswerKeyBoardInline;
       console.log(`Сохранен пользователь ${ctx.message.chat.username}`);
     })
+    options = subscribeAnswerKeyBoardInline;
   } else {
     options = userOld.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
   }
