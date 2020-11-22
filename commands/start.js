@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { subscriptionAnswerKeyBoardInline } = require('../utils/keyBoards');
+const { subscribeAnswerKeyBoardInline, unSubscribeAnswerKeyBoardInline } = require('../utils/keyBoards');
 
 
 function setupStart(bot) {
@@ -12,16 +12,19 @@ async function mainMenu(ctx) {
     username: ctx.message.chat.username,
     chat_id: ctx.chat.id
   });
+  let options;
   const userOld = await User.findOne({chat_id: ctx.chat.id}).exec();
   if (!userOld) {
     user.save(function(err){
       if(err) return console.log(err);
+      options = subscribeAnswerKeyBoardInline;
       console.log(`Сохранен пользователь ${ctx.message.chat.username}`);
     })
+  } else {
+    options = userOld.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
   }
 
-  const options = subscriptionAnswerKeyBoardInline;
-  ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей в соответствии с вашими подписками после окончания всех матчей. Добавить, удалить, а так же посмотреть свои подписки можете в разделе настройки. Вы не будете подписаны пока не нажмёте кнопку "Подписаться"!`, options);
+  ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options);
 }
 
 // Exports

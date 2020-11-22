@@ -2,6 +2,38 @@ const fetch = require('node-fetch');
 const { dayToIso, isPastDate} = require('./date');
 const stringTable = require('string-table');
 
+// Championats
+const championats =  [
+  // Россия
+  'Россия - Премьер-Лига',
+  'Кубок России',
+  //Англия
+  'Англия - Премьер-лига',
+  'Кубок Англии',
+  'Суперкубок Англии',
+  'Англия - Кубок лиги',
+  // Германия
+  'Суперкубок Германии',
+  'Германия - Бундеслига',
+  'Кубок Германии',
+  // Италия
+  'Суперкубок Италии',
+  'Кубок Италии',
+  'Италия - Серия А',
+  // Испания
+  'Испания - Примера',
+  'Суперкубок Испании',
+  // Франция
+  'Франция - Лига 1',
+  'Суперкубок Франции',
+  // Европа
+  'Лига чемпионов',
+  'Лига Европы',
+  // Сборные
+  'Товарищеские матчи (сборные)',
+  'Лига наций УЕФА',
+];
+
 // URL Sports
 function returnUrlSports({country, view}) {
   return `https://www.sports.ru/core/stat/gadget/${view}/?args={%22tournament_id%22:${country}}`;
@@ -18,7 +50,7 @@ async function getData(api, config) {
   const url = (api === 'sports') ? returnUrlSports(config) : returnUrlChampionat(config);
   const data = await fetch(url);
   const json = await data.json();
-  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, config.subscriptions, config.check);
+  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, championats, config.check);
   return result
 }
 
@@ -110,19 +142,11 @@ function dataConversionSports(data, result) {
     return 'Ошибка';
   }
 }
-function arrayToString(arr) {
-  let string = '';
-  arr.forEach((el, i) => {
-    string += `<i>/${i+1+'.'+el}</i>\r\n`;
-  });
-  return string;
-}
 
 // Exports
 module.exports = {
   getData,
   dataConversionSports,
   dataConversionChampionat,
-  arrayToString,
 }
 
