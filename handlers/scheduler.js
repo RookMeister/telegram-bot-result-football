@@ -8,8 +8,8 @@ async function startScheduler(bot) {
     const users = await User.find({});
     if (users.length) {
       users.forEach(async (el) => {
-        const data = await getData('championat', { date: 'now', check: true });
-        let info = dataConversionChampionat(data, el.subscriptions);
+        const data = await getData('championat', { date: 'now', subscriptions: el.subscriptions, check: true });
+        let info = dataConversionChampionat(data);
         info = (info === 'Нет подходящих матчей') ? '' : info;
         if (info && !isSend) {
           sendMessage(bot.telegram, el.chat_id, info);

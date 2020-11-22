@@ -1,7 +1,6 @@
 const { footballScoresKeyBoardInline } = require('../utils/keyBoards');
 const { getData } = require('../utils/helpers')
 const { dataConversionChampionat } = require('../utils/helpers')
-const User = require('../models/user');
 
 function setupMatches(bot) {
   bot.hears('Матч-центр', (ctx) => getMatches(ctx, 'now'));
@@ -13,10 +12,9 @@ function setupMatches(bot) {
 async function getMatches(ctx, date, editMessage) {
   const data = await getData('championat', { date });
   const options = footballScoresKeyBoardInline;
-  const user = await User.findOne({chat_id: ctx.chat.id}).exec();
-  const info = dataConversionChampionat(data, user.subscriptions);
-  options.parse_mode = 'HTML';
+  const info = dataConversionChampionat(data);
   if (editMessage) {
+    options.parse_mode = 'HTML';
     ctx.editMessageText(info, options);
   } else {
     ctx.replyWithHTML(info, options);
