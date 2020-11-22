@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { subscribeAnswerKeyBoardInline, unSubscribeAnswerKeyBoardInline } = require('../utils/keyBoards');
+const { subscribeAnswerKeyBoardInline, unSubscribeAnswerKeyBoardInline, mainKeyboard } = require('../utils/keyBoards');
 
 
 function setupStart(bot) {
@@ -23,8 +23,9 @@ async function mainMenu(ctx) {
   } else {
     options = userOld.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
   }
-
   ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options);
+  const keyboard = mainKeyboard;
+  ctx.replyWithHTML('Выберите раздел в меню', keyboard);
 }
 
 // Exports
