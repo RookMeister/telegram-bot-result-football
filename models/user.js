@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
 	username: String,
-  chat_id: Number,
+  chat_id: { type: Number, unique: true },
   onScheduler: { type: Boolean, default: false },
 	createdAt: { type: String, default: new Date().toLocaleString('ru-RU', { hour12: false }) },
   // likeClub: [String],

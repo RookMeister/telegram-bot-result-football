@@ -9,6 +9,8 @@ function setupMongoose() {
   mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
   });
   // Reconnect on disconnect
   mongoose.connection.on('disconnected', () => {
@@ -16,6 +18,7 @@ function setupMongoose() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
+      useCreateIndex: true,
     })
   });
 }
