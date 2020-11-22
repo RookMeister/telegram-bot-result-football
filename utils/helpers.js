@@ -51,7 +51,7 @@ function getDataChampionat(data, subscriptions, checkEnd = false) {
     const matches = [];
     outer: for (const value of Object.values(tournaments)) {
       const nameTournament = value.name_tournament || value.name;
-      if (!subscriptions.includes(nameTournament)) return;
+      if (!subscriptions.includes(nameTournament)) continue;
       matches.push({title: value.name, championat: nameTournament})
       for (const el of value.matches) {
         if (checkEnd && el.raw_status === 'dns') {
@@ -68,10 +68,9 @@ function getDataChampionat(data, subscriptions, checkEnd = false) {
     return 'Ошибка';
   }
 }
-
 function dataConversionChampionat(data) {
   try {
-    if (!data && !!subscriptions.length)  return 'Ошибка';
+    if (!data)  return 'Ошибка';
     let string = '';
     data.forEach(el => {
       if (el.title) {
@@ -80,7 +79,7 @@ function dataConversionChampionat(data) {
         string += `${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
         string += (el.result)
                     ? `${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`
-                    : `${el.startTime ? '(' + el.startTime +' - мск. время)' : el.status}\r\n`;
+                    : `${el.status === 'Не начался' ? '(' + el.startTime +' - мск. время)' : el.status}\r\n`;
       }
     });
     return string || 'Нет подходящих матчей';
@@ -89,7 +88,6 @@ function dataConversionChampionat(data) {
     return 'Ошибка';
   }
 }
-
 function dataConversionSports(data, result) {
   try {
     if (!data && !result)  return 'Ошибка';
@@ -112,11 +110,19 @@ function dataConversionSports(data, result) {
     return 'Ошибка';
   }
 }
+function arrayToString(arr) {
+  let string = '';
+  arr.forEach((el, i) => {
+    string += `<i>/${i+1+'.'+el}</i>\r\n`;
+  });
+  return string;
+}
 
 // Exports
 module.exports = {
   getData,
   dataConversionSports,
   dataConversionChampionat,
+  arrayToString,
 }
 

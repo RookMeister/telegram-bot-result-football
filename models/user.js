@@ -39,7 +39,7 @@ const UserSchema = new Schema({
   onScheduler: { type: Boolean, default: false },
 	subscriptions: { type: [String], default: champions },
 	createdAt: { type: String, default: new Date().toLocaleString('ru-RU', { hour12: false }) },
-  likeClub: [String],
+  // likeClub: [String],
 });
 
 const User = mongoose.model('user', UserSchema);

@@ -1,11 +1,10 @@
 const { settingsKeyboard } = require('../utils/keyBoards');
+const { arrayToString } = require('../utils/helpers')
 const User = require('../models/user');
 
 function setupSettings(bot) {
   bot.hears('Настройки', (ctx) => showSettings(ctx));
-  // bot.action('Вчера', (ctx) => getMatches(ctx, 'prev', true));
-  // bot.action('Сегодня', (ctx) => getMatches(ctx, 'now', true));
-  // bot.action('Завтра', (ctx) => getMatches(ctx, 'next', true));
+  bot.hears('Подписки', (ctx) => showSubscribes(ctx));
 }
 
 function showSettings(ctx) {
@@ -14,20 +13,13 @@ function showSettings(ctx) {
   ctx.replyWithHTML(info, options);
 }
 
-// async function showSettings(ctx) {
-//   const user = await User.findOne({chat_id: ctx.chat.id}).exec();
-//   const data = await getData('championat', { date, subscriptions: user.subscriptions });
-//   const options = footballScoresKeyBoardInline;
-//   const info = dataConversionChampionat(data);
-//   options.parse_mode = 'HTML';
-//   if (editMessage) {
-//     ctx.editMessageText(info, options);
-//   } else {
-//     ctx.replyWithHTML(info, options);
-//   }
-// }
+async function showSubscribes(ctx) {
+  const user = await User.findOne({chat_id: ctx.chat.id}).exec();
+  const info = arrayToString(user.subscriptions);
+  ctx.replyWithHTML(info);
+}
 
 // Exports
 module.exports = {
-  setupMatches,
+  setupSettings,
 }
