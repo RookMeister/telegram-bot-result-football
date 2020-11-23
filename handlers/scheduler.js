@@ -10,7 +10,6 @@ async function startScheduler(bot) {
       users.forEach(async (el) => {
         const data = await getData('championat', { date: 'now', subscriptions: el.subscriptions, check: true });
         let info = dataConversionChampionat(data);
-        console.log(info, isSend);
         info = (info === 'Нет подходящих матчей') ? '' : info;
         if (info && !isSend) {
           sendMessage(bot.telegram, el.chat_id, info);
@@ -20,12 +19,13 @@ async function startScheduler(bot) {
         }
       });
     }
-  }, 5000);
+  }, 60000);
 }
 
 
 async function sendMessage(ctx, chatId, info) {
   try {
+    console.log('sendMessage',!!info, chatId);
     ctx.sendMessage(chatId, info, {parse_mode: 'html'})
   } catch (e) {
     console.error(e);
