@@ -14,18 +14,30 @@ async function mainMenu(ctx) {
   });
   let options;
   const userOld = await User.findOne({chat_id: ctx.chat.id}).exec();
-  if (!userOld) {
+  if (userOld) {
+    options = userOld.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
+  } else {
     user.save(function(err){
       if(err) return console.log(err);
       console.log(`Сохранен пользователь ${ctx.message.chat.username}`);
     })
     options = subscribeAnswerKeyBoardInline;
-  } else {
-    options = userOld.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
   }
-  ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options);
+  ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options).then(function(resp) {
+    // ...snip...
+  }).catch(function(error) {
+    if (error.response && error.response.statusCode === 403) {
+      console.log(666)
+    }
+  });
   const keyboard = mainKeyboard;
-  ctx.replyWithHTML('Выберите раздел в меню', keyboard);
+  ctx.replyWithHTML('Выберите раздел в меню', keyboard).then(function(resp) {
+    // ...snip...
+  }).catch(function(error) {
+    if (error.response && error.response.statusCode === 403) {
+      console.log(777)
+    }
+  });
 }
 
 // Exports

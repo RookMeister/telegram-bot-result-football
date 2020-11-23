@@ -22,7 +22,7 @@ async function subscribes(ctx) {
   const user = await User.findOne({chat_id: ctx.chat.id}).exec();
   let info;
   let options;
-  if (user.onScheduler) {
+  if (user && user.onScheduler) {
     info = 'Вы уверены, что хотите отписаться?'
     options = unSubscribeAnswerKeyBoardInline;
   } else {
