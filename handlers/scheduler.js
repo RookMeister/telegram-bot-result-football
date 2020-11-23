@@ -2,10 +2,11 @@ const { getData } = require('../utils/helpers')
 const { dataConversionChampionat } = require('../utils/helpers')
 const User = require('../models/user');
 
+let isSend = false;
+
 async function startScheduler(bot) {
-  
   setInterval(async () => {
-    let isSend = false;
+    console.log('isSend', isSend)
     const users = await User.find({});
     if (users.length && !isSend) {
       users.forEach(async (el) => {
@@ -15,10 +16,12 @@ async function startScheduler(bot) {
         if (info && el.onScheduler) {
           sendMessage(bot.telegram, el.chat_id, info);
           isSend = true;
+        } else if (!data) {
+          isSend = false;
         }
       });
     }
-  }, 60000);
+  }, 600000);
 }
 
 
