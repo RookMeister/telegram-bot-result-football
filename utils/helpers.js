@@ -86,7 +86,7 @@ function getDataChampionat(data, subscriptions, checkEnd = false) {
       if (!subscriptions.includes(nameTournament)) continue;
       matches.push({title: value.name, championat: nameTournament})
       for (const el of value.matches) {
-        if (checkEnd && el.raw_status !== 'fin') {
+        if (checkEnd && (el.raw_status !== 'fin' && el.raw_status !== 'post')) {
           matches.length = 0;
           break outer;
         }
