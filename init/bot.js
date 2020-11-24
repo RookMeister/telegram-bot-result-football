@@ -1,5 +1,6 @@
 const Telegraf = require('telegraf');
 const Session = require('telegraf/session');
+const User = require('../models/user');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -22,6 +23,11 @@ function startBot() {
 
 function startMiddelware() {
   bot.use(Session());
+  bot.use(async (ctx, next) => {
+    const user = await User.findOne({chat_id: ctx.chat.id}).exec();
+    ctx.session.user = user;
+    await next()
+  })
 }
 
 // Export bot

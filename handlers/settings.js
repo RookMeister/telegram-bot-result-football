@@ -19,7 +19,7 @@ function showSettings(ctx) {
 }
 
 async function subscribes(ctx) {
-  const user = await User.findOne({chat_id: ctx.chat.id}).exec();
+  const user = ctx.session.user;
   let info;
   let options;
   if (user && user.onScheduler) {

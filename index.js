@@ -11,6 +11,7 @@ const { setupStat } = require('./handlers/statistics')
 const { startScheduler } = require('./handlers/scheduler')
 const { setupSubscribe } = require('./handlers/subscribe')
 const { setupSettings } = require('./handlers/settings')
+const { setupTimeZone } = require('./handlers/timeZone')
 
 setupMongoose();
 
@@ -22,5 +23,11 @@ setupStat(bot);
 startScheduler(bot);
 setupSubscribe(bot);
 setupSettings(bot);
+setupTimeZone(bot);
+
+bot.on('message', (ctx) => {
+  const info = 'Извини, я не могу тебя понять. Используй кнопки. Если не видишь кнопки, отправь мне /start';
+  ctx.reply(info);
+});
 
 startBot();
