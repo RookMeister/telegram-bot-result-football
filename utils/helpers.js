@@ -54,7 +54,7 @@ async function getData(api, config) {
   return result
 }
 
-async function getDataSports(data) {
+function getDataSports(data) {
   try {
     if (data.tournament_table && data.tournament_table[0].list) {
       const table = [];
@@ -86,7 +86,7 @@ function getDataChampionat(data, subscriptions, checkEnd = false) {
       if (!subscriptions.includes(nameTournament)) continue;
       matches.push({title: value.name, championat: nameTournament})
       for (const el of value.matches) {
-        if (checkEnd && el.raw_status === 'dns') {
+        if (checkEnd && el.raw_status !== 'fin') {
           matches.length = 0;
           break outer;
         }
