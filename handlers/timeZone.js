@@ -18,7 +18,7 @@ function showTomeZone(ctx) {
 async function setTimeZone(ctx) {
   await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { timeZone: ctx.match.input } }, function (err, data) {
     if (err) return console.log(err);
-    ctx.session.user = data;
+    ctx.session.user.timeZone = ctx.match.input;
     const date = addHours(new Date(), Number(ctx.session.user.timeZone))
     const info = `Твой часовой пояс ${ctx.session.user.timeZone}. Так что теперь время ${format(date, 'HH:mm')}. Если это не так, измени часовой пояс:`;
     ctx.replyWithHTML(info);
