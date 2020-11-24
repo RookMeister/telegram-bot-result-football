@@ -6,7 +6,6 @@ let isSend = false;
 
 async function startScheduler(bot) {
   setInterval(async () => {
-    console.log('isSend', isSend)
     const users = await User.find({});
     if (users.length && !isSend) {
       users.forEach(async (el) => {

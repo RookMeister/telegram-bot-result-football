@@ -23,19 +23,19 @@ async function mainMenu(ctx) {
     })
     options = subscribeAnswerKeyBoardInline;
   }
-  ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options).then(function(resp) {
-    // ...snip...
-  }).catch(function(error) {
-    if (error.response && error.response.statusCode === 403) {
-      console.log(666)
-    }
-  });
   const keyboard = mainKeyboard;
   ctx.replyWithHTML('Выберите раздел в меню', keyboard).then(function(resp) {
     // ...snip...
   }).catch(function(error) {
     if (error.response && error.response.statusCode === 403) {
-      console.log(777)
+      console.log('bot blocked', ctx.message.chat.username);
+    }
+  });
+  ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options).then(function(resp) {
+    // ...snip...
+  }).catch(function(error) {
+    if (error.response && error.response.statusCode === 403) {
+      console.log('bot blocked', ctx.message.chat.username);
     }
   });
 }
