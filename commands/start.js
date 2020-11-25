@@ -4,7 +4,7 @@ const { subscribeAnswerKeyBoardInline, unSubscribeAnswerKeyBoardInline, mainKeyb
 
 function setupStart(bot) {
   // Start command
-  bot.command('start', async (ctx) => await mainMenu(ctx));
+  bot.command('start', async (ctx) => mainMenu(ctx));
 }
 
 async function mainMenu(ctx) {
@@ -24,14 +24,14 @@ async function mainMenu(ctx) {
     options = subscribeAnswerKeyBoardInline;
   }
   const keyboard = mainKeyboard;
-  ctx.replyWithHTML('Выберите раздел в меню', keyboard).then(function(resp) {
+  await ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options).then(function(resp) {
     // ...snip...
   }).catch(function(error) {
     if (error.response && error.response.statusCode === 403) {
       console.log('bot blocked', ctx.message.chat.username);
     }
   });
-  ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options).then(function(resp) {
+  await ctx.replyWithHTML('Выберите раздел в меню', keyboard).then(function(resp) {
     // ...snip...
   }).catch(function(error) {
     if (error.response && error.response.statusCode === 403) {

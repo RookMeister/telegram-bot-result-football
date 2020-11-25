@@ -24,7 +24,7 @@ async function isSubscribe(ctx, isSubscribe = false) {
     info = 'Вы отписались';
     keyboard = subscribeAnswerKeyBoardInline;
   }
-  ctx.answerCbQuery(info, false);
+  await ctx.answerCbQuery(info);
   ctx.editMessageText(string, keyboard);
 }
 
