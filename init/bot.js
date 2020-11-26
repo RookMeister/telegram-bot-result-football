@@ -29,12 +29,12 @@ function startMiddelware() {
       ctx.session.user = userOld;
     } else {
       const user = new User({
-        username: ctx.message.chat.username,
+        username: ctx.chat.username || ctx.chat.first_name,
         chat_id: ctx.chat.id,
       });
       await user.save(function(err) {
         if(err) return console.log(err);
-        console.log(`Сохранен пользователь ${ctx.message.chat.username}`);
+        console.log(`Сохранен пользователь ${ctx.chat}`);
         ctx.session.user = user;
       })
     }

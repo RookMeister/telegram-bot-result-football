@@ -14,14 +14,14 @@ async function mainMenu(ctx) {
     // ...snip...
   }).catch(function(error) {
     if (error.response && error.response.statusCode === 403) {
-      console.log('bot blocked', ctx.message.chat.username);
+      console.log('bot blocked', ctx.chat);
     }
   });
   await ctx.replyWithHTML('Выберите раздел в меню', keyboard).then(function(resp) {
     // ...snip...
   }).catch(function(error) {
     if (error.response && error.response.statusCode === 403) {
-      console.log('bot blocked', ctx.message.chat.username);
+      console.log('bot blocked', ctx.chat);
     }
   });
 }
