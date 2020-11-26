@@ -85,7 +85,7 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
       if (!subscriptions.includes(nameTournament)) continue;
       matches.push({title: value.name, championat: nameTournament})
       for (const el of value.matches) {
-        if (checkEnd && el.raw_status === 'dns') {
+        if (checkEnd && el.raw_status === 'dns' && el.raw_status === '1t' && el.raw_status === '2t') {
           matches.length = 0;
           break outer;
         }
