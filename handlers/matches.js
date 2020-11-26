@@ -10,7 +10,7 @@ function setupMatches(bot) {
 }
 
 async function getMatches(ctx, date, editMessage) {
-  const data = await getData('championat', { date });
+  const data = await getData('championat', { date, timeZone: Number(ctx.session.user.timeZone) });
   const options = footballScoresKeyBoardInline;
   const info = dataConversionChampionat(data);
   if (editMessage) {

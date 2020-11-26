@@ -9,7 +9,7 @@ async function startScheduler(bot) {
     const users = await User.find({});
     if (users.length && !isSend) {
       users.forEach(async (el) => {
-        const data = await getData('championat', { date: 'now', subscriptions: el.subscriptions, check: true });
+        const data = await getData('championat', { date: 'now', subscriptions: el.subscriptions, check: true, timeZone: Number(el.timeZone) });
         let info = dataConversionChampionat(data);
         info = (info === 'Нет подходящих матчей') ? '' : info;
         if (info && el.onScheduler) {

@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const { dayToIso, isPastDate} = require('./date');
+const { dayToIso, isPastDate, getHoursTimeZone } = require('./date');
 const stringTable = require('string-table');
 
 // Championats
@@ -45,12 +45,11 @@ function returnUrlChampionat({date}) {
   return `https://www.championat.com/stat/football/${stringDate}.json`;
 }
 
-
 async function getData(api, config) {
   const url = (api === 'sports') ? returnUrlSports(config) : returnUrlChampionat(config);
   const data = await fetch(url);
   const json = await data.json();
-  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, championats, config.check);
+  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, championats, config.timeZone, config.check);
   return result
 }
 
@@ -77,7 +76,7 @@ function getDataSports(data) {
     return 'Ошибка';
   }
 }
-function getDataChampionat(data, subscriptions, checkEnd = false) {
+function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
   try {
     const tournaments = data.matches.football.tournaments;
     const matches = [];
@@ -86,11 +85,11 @@ function getDataChampionat(data, subscriptions, checkEnd = false) {
       if (!subscriptions.includes(nameTournament)) continue;
       matches.push({title: value.name, championat: nameTournament})
       for (const el of value.matches) {
-        if (checkEnd && (el.raw_status !== 'fin' && el.raw_status !== 'post')) {
+        if (checkEnd && el.raw_status === 'dns') {
           matches.length = 0;
           break outer;
         }
-        matches.push({firstTeam: el.teams[0], secondTeam: el.teams[1], startTime: el.time , result: el.result, status: el.status, group: el.group, championat: nameTournament})
+        matches.push({firstTeam: el.teams[0], secondTeam: el.teams[1], startTime: getHoursTimeZone(`${el.date} ${el.time}`, timeZone) , result: el.result, status: el.status, group: el.group, championat: nameTournament})
       }
     }
     return matches;
@@ -107,10 +106,10 @@ function dataConversionChampionat(data) {
       if (el.title) {
         string += `\r\n<i>${el.title}</i>\r\n\r\n`;
       } else {
-        string += `${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
+        string += `${el.startTime[0]} ${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
         string += (el.result)
                     ? `${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`
-                    : `${el.status === 'Не начался' ? '(' + el.startTime +' - мск. время)' : el.status}\r\n`;
+                    : `${el.status === 'Не начался' ? 'в ' + el.startTime[1] : el.status}\r\n`;
       }
     });
     return string || 'Нет подходящих матчей';

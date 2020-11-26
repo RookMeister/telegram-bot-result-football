@@ -4,6 +4,8 @@ const startOfYesterday = require('date-fns/startOfYesterday');
 const startOfToday = require('date-fns/startOfToday');
 const parseISO = require('date-fns/parseISO')
 const isPast = require('date-fns/isPast')
+const format = require('date-fns/format');
+const addHours = require('date-fns/addHours');
 
 
 function dayToIso(day) {
@@ -19,7 +21,13 @@ function isPastDate(date) {
   return isPast(parseISO(date));
 }
 
+function getHoursTimeZone(date, hours) {
+  const dateNew = addHours(parseISO(date), hours - 3);
+  return [format(dateNew, 'd.M'), format(dateNew, 'HH:mm')];
+}
+
 module.exports = {
   dayToIso,
   isPastDate,
+  getHoursTimeZone,
 }
