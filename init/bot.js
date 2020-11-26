@@ -24,8 +24,20 @@ function startBot() {
 function startMiddelware() {
   bot.use(Session());
   bot.use(async (ctx, next) => {
-    const user = await User.findOne({chat_id: ctx.chat.id}).exec();
-    ctx.session.user = user;
+    const userOld = await User.findOne({chat_id: ctx.chat.id}).exec();
+    if (userOld) {
+      ctx.session.user = userOld;
+    } else {
+      const user = new User({
+        username: ctx.message.chat.username,
+        chat_id: ctx.chat.id,
+      });
+      await user.save(function(err) {
+        if(err) return console.log(err);
+        console.log(`Сохранен пользователь ${ctx.message.chat.username}`);
+        ctx.session.user = user;
+      })
+    }
     await next()
   })
 }

@@ -8,21 +8,7 @@ function setupStart(bot) {
 }
 
 async function mainMenu(ctx) {
-  const user = new User({
-    username: ctx.message.chat.username,
-    chat_id: ctx.chat.id
-  });
-  let options;
-  const userOld = await User.findOne({chat_id: ctx.chat.id}).exec();
-  if (userOld) {
-    options = userOld.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
-  } else {
-    user.save(function(err){
-      if(err) return console.log(err);
-      console.log(`Сохранен пользователь ${ctx.message.chat.username}`);
-    })
-    options = subscribeAnswerKeyBoardInline;
-  }
+  const options = ctx.session.user.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
   const keyboard = mainKeyboard;
   await ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options).then(function(resp) {
     // ...snip...
