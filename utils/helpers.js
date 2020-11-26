@@ -80,18 +80,22 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
   try {
     const tournaments = data.matches.football.tournaments;
     const matches = [];
+    const logs = [];
     outer: for (const value of Object.values(tournaments)) {
       const nameTournament = value.name_tournament || value.name;
       if (!subscriptions.includes(nameTournament)) continue;
       matches.push({title: value.name, championat: nameTournament})
       for (const el of value.matches) {
-        if (checkEnd && el.raw_status === 'dns' && el.raw_status === '1t' && el.raw_status === '2t') {
+        if (checkEnd && el.raw_status !== 'fin' && el.raw_status !== 'post') {
+          console.log(el.link_title, el.status)
           matches.length = 0;
           break outer;
         }
         matches.push({firstTeam: el.teams[0], secondTeam: el.teams[1], startTime: getHoursTimeZone(`${el.date} ${el.time}`, timeZone) , result: el.result, status: el.status, group: el.group, championat: nameTournament})
+        logs.push({title: el.link_title, status: el.status});
       }
     }
+    checkEnd && console.log(logs)
     return matches;
   } catch (err) {
     console.error(err);
@@ -118,6 +122,7 @@ function dataConversionChampionat(data) {
     return 'Ошибка';
   }
 }
+
 function dataConversionSports(data, result) {
   try {
     if (!data && !result)  return 'Ошибка';
