@@ -12,6 +12,7 @@ function setupMatches(bot) {
 async function getMatches(ctx, date, editMessage) {
   const data = await getData('championat', { date, timeZone: Number(ctx.session.user.timeZone) });
   const options = footballScoresKeyBoardInline;
+  options.disable_web_page_preview = true;
   const info = dataConversionChampionat(data);
   if (editMessage) {
     options.parse_mode = 'HTML';
