@@ -90,7 +90,16 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
           matches.length = 0;
           break outer;
         }
-        matches.push({firstTeam: el.teams[0], secondTeam: el.teams[1], startTime: getHoursTimeZone(`${el.date} ${el.time}`, timeZone) , result: el.result, status: el.status, group: el.group, championat: nameTournament})
+        matches.push({
+          firstTeam: el.teams[0],
+          secondTeam: el.teams[1],
+          startTime: getHoursTimeZone(`${el.date} ${el.time}`, timeZone),
+          result: el.result,
+          status: el.status,
+          group: el.group,
+          championat: nameTournament,
+          link: el.link,
+        })
         logs.push({title: el.link_title, status: el.status});
       }
     }
@@ -109,7 +118,7 @@ function dataConversionChampionat(data) {
       if (el.title) {
         string += `\r\n<i>${el.title}</i>\r\n\r\n`;
       } else {
-        string += `${el.startTime[0]} ${el.firstTeam.name} \u2014 ${el.secondTeam.name} `;
+        string += `${el.startTime[0]} <a href="http://championat.com${el.link}">${el.firstTeam.name} \u2014 ${el.secondTeam.name} </a>`;
         string += (el.result)
                     ? `${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`
                     : `${el.status === 'Не начался' ? 'в ' + el.startTime[1] : el.status}\r\n`;
