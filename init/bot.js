@@ -26,10 +26,16 @@ function startMiddelware() {
   bot.use(async (ctx, next) => {
     const userOld = await User.findOne({chat_id: ctx.chat.id}).exec();
     if (userOld) {
+      if (!userOld.username) {
+        userOld.username = ctx.chat.username || ctx.chat.first_name || null;
+        await userOld.save(function(err) {
+          if(err) return console.log(err);
+        })
+      }
       ctx.session.user = userOld;
     } else {
       const user = new User({
-        username: ctx.chat.username || ctx.chat.first_name,
+        username: ctx.chat.username || ctx.chat.first_name || null,
         chat_id: ctx.chat.id,
       });
       await user.save(function(err) {

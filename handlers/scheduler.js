@@ -27,7 +27,7 @@ async function startScheduler(bot) {
 async function sendMessage(ctx, chatId, info) {
   try {
     console.log('sendMessage',!!info, chatId);
-    ctx.sendMessage(chatId, info, {parse_mode: 'html'})
+    ctx.sendMessage(chatId, info, {parse_mode: 'html', disable_web_page_preview: true})
   } catch (e) {
     console.error(e);
   }
