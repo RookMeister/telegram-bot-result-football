@@ -88,6 +88,7 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
       for (const el of value.matches) {
         if (checkEnd && el.raw_status !== 'fin' && el.raw_status !== 'post') {
           matches.length = 0;
+          logs.push({title: el.link_title, status: el.status});
           break outer;
         }
         matches.push({
@@ -100,7 +101,6 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
           championat: nameTournament,
           link: el.link,
         })
-        logs.push({title: el.link_title, status: el.status});
       }
     }
     checkEnd && logs.length && console.log(logs)
