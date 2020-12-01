@@ -8,7 +8,8 @@ function setupStart(bot) {
 }
 
 async function mainMenu(ctx) {
-  const options = ctx.session.user.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
+  const user = ctx.session.user;
+  const options = user && user.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
   const keyboard = mainKeyboard;
   await ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options).then(function(resp) {
     // ...snip...

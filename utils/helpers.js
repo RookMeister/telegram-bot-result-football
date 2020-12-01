@@ -80,7 +80,6 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
   try {
     const tournaments = data.matches.football.tournaments;
     const matches = [];
-    const logs = [];
     outer: for (const value of Object.values(tournaments)) {
       const nameTournament = value.name_tournament || value.name;
       if (!subscriptions.includes(nameTournament)) continue;
@@ -88,7 +87,6 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
       for (const el of value.matches) {
         if (checkEnd && el.raw_status !== 'fin' && el.raw_status !== 'post') {
           matches.length = 0;
-          logs.push({title: el.link_title, status: el.status});
           break outer;
         }
         matches.push({
@@ -103,7 +101,6 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
         })
       }
     }
-    checkEnd && logs.length && console.log(logs)
     return matches;
   } catch (err) {
     console.error(err);
