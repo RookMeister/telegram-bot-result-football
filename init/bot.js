@@ -12,8 +12,7 @@ bot.telegram.getMe().then(info => {
 
 // Bot catch
 bot.catch(err => {
-  console.log(err)
-  report(bot, err, 'bot.catch')
+  console.log(err, 'bot.catch')
 })
 
 // Start bot
@@ -24,12 +23,15 @@ function startBot() {
 function startMiddelware() {
   bot.use(Session());
   bot.use(async (ctx, next) => {
-    const userOld = await User.findOne({chat_id: ctx.chat.id}).exec();
+    const userOld = await User.findOne({chat_id: ctx.chat.id}, function (err, data) {
+      if (err) return console.log(err);
+      if (data) return data;
+    });
     if (userOld) {
       if (!userOld.username) {
         userOld.username = ctx.chat.username || ctx.chat.first_name || null;
         await userOld.save(function(err) {
-          if(err) return console.log(err);
+          if(err) return console.log('startMiddelware', err);
         })
       }
       ctx.session.user = userOld;
@@ -39,7 +41,7 @@ function startMiddelware() {
         chat_id: ctx.chat.id,
       });
       await user.save(function(err) {
-        if(err) return console.log(err);
+        if(err) return console.log('startMiddelware', err);
         console.log(`Сохранен пользователь ${ctx.chat}`);
         ctx.session.user = user;
       })

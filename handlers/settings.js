@@ -1,16 +1,29 @@
-const { 
+const {
   mainKeyboard,
   settingsKeyboard,
   subscribeAnswerKeyBoardInline,
-  unSubscribeAnswerKeyBoardInline
+  unSubscribeAnswerKeyBoardInline,
 } = require('../utils/keyBoards');
-const User = require('../models/user');
+const { getPaginationInfo } = require('../utils/helpers')
 
 function setupSettings(bot) {
   bot.hears('Настройки', (ctx) => showSettings(ctx));
   bot.hears('Подписки', (ctx) => subscribes(ctx));
+  // bot.hears('Подписки', (ctx) => paginationSubscribe(ctx, 1));
   bot.hears('🔙Назад', (ctx) => goBack(ctx));
   bot.hears('О боте', (ctx) => about(ctx));
+  bot.on('callback_query', (ctx) => paginationSubscribe(ctx));
+}
+
+async function paginationSubscribe(ctx, curentPage) {
+  const current = curentPage || parseInt(ctx.callbackQuery.data.match(/\d+/))
+  const options = await getPaginationInfo(current, 5);
+  const info = `Страница №${current}`;
+  if (!curentPage) {
+    ctx.editMessageText(info, options);
+  } else {
+    ctx.replyWithHTML(info, options);
+  }
 }
 
 function showSettings(ctx) {

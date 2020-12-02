@@ -9,7 +9,7 @@ const inInline = (array, size = 3) => {
     }
   })
   const res = []; //массив в который будет выведен результат.
-  for (let i = 0; i <Math.ceil(key.length/size); i++){
+  for (let i = 0; i < Math.ceil(key.length/size); i++){
     res[i] = key.slice((i*size), (i*size) + size);
   }
   return Markup.inlineKeyboard([...res]).extra();
@@ -45,6 +45,7 @@ const timeZoneKeyBoardInline = inInline(timeZone, 6);
 
 // Exports
 module.exports = {
+  inInline,
   timeZone,
   countryCode,
   viewCode,

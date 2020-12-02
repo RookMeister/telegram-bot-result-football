@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const { dayToIso, isPastDate, getHoursTimeZone } = require('./date');
 const stringTable = require('string-table');
+const { inInline } = require('../utils/keyBoards');
 
 // Championats
 const championats =  [
@@ -53,6 +54,37 @@ async function getData(api, config) {
   return result
 }
 
+async function getTournaments() {
+  const url = 'https://www.championat.com/stat/tournament/search/';
+  const data = await fetch(url);
+  const json = await data.json();
+  const tournaments = (json[0].name === 'Футбол') ? json[0].tournaments : null;
+  return tournaments && tournaments.map(el => el.name)
+}
+
+async function getPaginationInfo(current, maxpage) {
+  let arrayPag = []
+  const data = await getTournaments();
+  data.forEach((el, i) => {
+    const condition = (i >= (current - 1) * maxpage) && (i < current * maxpage)
+    if (condition) {
+      arrayPag.push(el);
+    };
+  });
+
+  const info = inInline(arrayPag, 1);
+  const maxPage = Math.ceil(data.length/maxpage);
+  const pagination1 = (current < 4) ? '1' : '<<1';
+  const pagination2 = (current < 4) ? '2' : (current-1).toString();
+  const pagination3 = (current < 4) ? '3' : current.toString();
+  const pagination4 = (current < 4) ? '4' : (current+1).toString();
+  const pagination5 = (current < maxPage) ? maxPage+'>>' : maxPage.toString();
+  const buttonsArray = [pagination1, pagination2, pagination3, pagination4, pagination5]
+  const buttons = inInline(buttonsArray, 5 );
+  info.reply_markup.inline_keyboard.push(buttons.reply_markup.inline_keyboard[0]);
+  return info;
+}
+
 function getDataSports(data) {
   try {
     if (data.tournament_table && data.tournament_table[0].list) {
@@ -72,7 +104,7 @@ function getDataSports(data) {
       return matches
     }
   } catch (err) {
-    console.error(err);
+    console.error('getDataSports', err);
     return 'Ошибка';
   }
 }
@@ -103,7 +135,7 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
     }
     return matches;
   } catch (err) {
-    console.error(err);
+    console.error('getDataChampionat', err);
     return 'Ошибка';
   }
 }
@@ -123,7 +155,7 @@ function dataConversionChampionat(data) {
     });
     return string || 'Нет подходящих матчей';
   } catch (err) {
-    console.error(err);
+    console.error('dataConversionChampionat', err);
     return 'Ошибка';
   }
 }
@@ -146,7 +178,7 @@ function dataConversionSports(data, result) {
       return string;
     }
   } catch (err) {
-    console.error(err);
+    console.error('dataConversionSports', err);
     return 'Ошибка';
   }
 }
@@ -156,5 +188,6 @@ module.exports = {
   getData,
   dataConversionSports,
   dataConversionChampionat,
+  getPaginationInfo,
 }
 

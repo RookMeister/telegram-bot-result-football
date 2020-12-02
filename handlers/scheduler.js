@@ -31,7 +31,7 @@ async function sendMessage(ctx, chatId, info) {
     console.log('sendMessage',!!info, chatId);
     ctx.sendMessage(chatId, info, {parse_mode: 'html', disable_web_page_preview: true})
   } catch (e) {
-    console.error(e);
+    console.error('sendMessage', e);
   }
 }
 
