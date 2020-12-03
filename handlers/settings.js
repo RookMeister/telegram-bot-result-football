@@ -9,7 +9,7 @@ const User = require('../models/user');
 
 function setupSettings(bot) {
   bot.hears('Настройки', (ctx) => showSettings(ctx));
-  // bot.hears('Подписки', (ctx) => subscribes(ctx));
+  bot.hears('Рассылки', (ctx) => subscribesList(ctx));
   bot.hears('Подписки', (ctx) => paginationSubscribe(ctx, 1));
   bot.hears('🔙Назад', (ctx) => goBack(ctx));
   bot.hears('О боте', (ctx) => about(ctx));
@@ -62,12 +62,12 @@ function showSettings(ctx) {
   ctx.replyWithHTML(info, options);
 }
 
-function subscribes(ctx) {
+function subscribesList(ctx) {
   const user = ctx.session.user;
   let info;
   let options;
   if (user && user.onScheduler) {
-    info = 'Вы уверены, что хотите отписаться?'
+    info = 'Вы уверены, что хотите отписаться от еженедельной подписки?'
     options = unSubscribeAnswerKeyBoardInline;
   } else {
     info = 'После подписки бот будет вам отправлять пуш с результатами матчей.'

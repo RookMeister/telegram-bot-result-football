@@ -9,16 +9,8 @@ function setupStart(bot) {
 
 async function mainMenu(ctx) {
   const user = ctx.session.user;
-  const options = user && user.onScheduler ? unSubscribeAnswerKeyBoardInline : subscribeAnswerKeyBoardInline;
-  const keyboard = mainKeyboard;
-  await ctx.replyWithHTML(`Подпишитесь на рассылку и этот бот будет присылать вам результаты матчей.`, options).then(function(resp) {
-    // ...snip...
-  }).catch(function(error) {
-    if (error.response && error.response.statusCode === 403) {
-      console.log('bot blocked', ctx.chat);
-    }
-  });
-  await ctx.replyWithHTML('Выберите раздел в меню', keyboard).then(function(resp) {
+  const options = mainKeyboard;
+  await ctx.replyWithHTML('Выберите раздел в меню', options).then(function(resp) {
     // ...snip...
   }).catch(function(error) {
     if (error.response && error.response.statusCode === 403) {
