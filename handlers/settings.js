@@ -28,10 +28,11 @@ async function callbackQuery(ctx) {
     if (notIsReg.test(query)) {
       const data = await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $addToSet : { subscribeTournaments: val }}, { new: true } );
       tornaments = data.subscribeTournaments;
+      info = 'Подписался';
     } else if (isReg.test(query)) {
       const data = await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $pull : { subscribeTournaments: val }}, { new: true });
       tornaments = data.subscribeTournaments;
-      info = 'Удалено';
+      info = 'Отписался';
     }
     const current = ctx.session.currentPage || 1;
     await ctx.answerCbQuery(info);
@@ -61,7 +62,7 @@ function showSettings(ctx) {
   ctx.replyWithHTML(info, options);
 }
 
-async function subscribes(ctx) {
+function subscribes(ctx) {
   const user = ctx.session.user;
   let info;
   let options;
