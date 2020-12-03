@@ -33,7 +33,7 @@ function startMiddelware() {
       });
       user.save(function(err) {
         if(err) return console.log('startMiddelware', err);
-        console.log(`Сохранен пользователь ${ctx.chat}`);
+        console.log(`Сохранен пользователь ${user.username}`);
         ctx.session.user = user;
       })
     }
