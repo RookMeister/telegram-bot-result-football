@@ -22,8 +22,8 @@ setupMatches(bot);
 setupStat(bot);
 startScheduler(bot);
 setupSubscribe(bot);
-setupSettings(bot);
 setupTimeZone(bot);
+setupSettings(bot);
 
 bot.on('message', (ctx) => {
   const info = 'Извини, я не могу тебя понять. Используй кнопки. Если не видишь кнопки, отправь мне /start';
