@@ -50,7 +50,7 @@ async function getData(api, config) {
   const url = (api === 'sports') ? returnUrlSports(config) : returnUrlChampionat(config);
   const data = await fetch(url);
   const json = await data.json();
-  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, championats, config.timeZone, config.check);
+  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, config.tournaments, config.timeZone, config.check);
   return result
 }
 
@@ -62,13 +62,14 @@ async function getTournaments() {
   return tournaments && tournaments.map(el => el.name)
 }
 
-async function getPaginationInfo(current, maxpage) {
+async function getPaginationInfo(current, maxpage, tornaments) {
   let arrayPag = []
   const data = await getTournaments();
   data.forEach((el, i) => {
     const condition = (i >= (current - 1) * maxpage) && (i < current * maxpage)
     if (condition) {
-      arrayPag.push(el);
+      const inArr = tornaments.includes(el);
+      arrayPag.push(inArr ? '✅ '+el : '🚫 '+el);
     };
   });
 

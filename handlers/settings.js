@@ -4,20 +4,49 @@ const {
   subscribeAnswerKeyBoardInline,
   unSubscribeAnswerKeyBoardInline,
 } = require('../utils/keyBoards');
-const { getPaginationInfo } = require('../utils/helpers')
+const { getPaginationInfo } = require('../utils/helpers');
+const User = require('../models/user');
 
 function setupSettings(bot) {
   bot.hears('Настройки', (ctx) => showSettings(ctx));
-  bot.hears('Подписки', (ctx) => subscribes(ctx));
-  // bot.hears('Подписки', (ctx) => paginationSubscribe(ctx, 1));
+  // bot.hears('Подписки', (ctx) => subscribes(ctx));
+  bot.hears('Подписки', (ctx) => paginationSubscribe(ctx, 1));
   bot.hears('🔙Назад', (ctx) => goBack(ctx));
   bot.hears('О боте', (ctx) => about(ctx));
-  bot.on('callback_query', (ctx) => paginationSubscribe(ctx));
+  bot.on('callback_query', (ctx) => callbackQuery(ctx));
+}
+
+async function callbackQuery(ctx) {
+  tornaments = [];
+  const query = ctx.callbackQuery.data;
+  const re = new RegExp('✅|🚫');
+  if (re.test(query)) {
+    let info = '';
+    const isReg = new RegExp('✅');
+    const notIsReg = new RegExp('🚫');
+    const val = query.replace(re, '').trim();
+    if (notIsReg.test(query)) {
+      const data = await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $addToSet : { subscribeTournaments: val }}, { new: true } );
+      tornaments = data.subscribeTournaments;
+    } else if (isReg.test(query)) {
+      const data = await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $pull : { subscribeTournaments: val }}, { new: true });
+      tornaments = data.subscribeTournaments;
+      info = 'Удалено';
+    }
+    const current = ctx.session.currentPage || 1;
+    await ctx.answerCbQuery(info);
+    const options = await getPaginationInfo(current, 5, tornaments);
+    ctx.editMessageReplyMarkup(options.reply_markup);
+  } else {
+    paginationSubscribe(ctx);
+  }
 }
 
 async function paginationSubscribe(ctx, curentPage) {
+  const tornaments = ctx.session.user.subscribeTournaments;
   const current = curentPage || parseInt(ctx.callbackQuery.data.match(/\d+/))
-  const options = await getPaginationInfo(current, 5);
+  ctx.session.currentPage = current;
+  const options = await getPaginationInfo(current, 5, tornaments);
   const info = `Страница №${current}`;
   if (!curentPage) {
     ctx.editMessageText(info, options);

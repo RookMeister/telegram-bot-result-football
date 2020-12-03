@@ -23,29 +23,33 @@ function startBot() {
 function startMiddelware() {
   bot.use(Session());
   bot.use(async (ctx, next) => {
-    const userOld = await User.findOne({chat_id: ctx.chat.id}, function (err, data) {
+    await User.findOne({chat_id: ctx.chat.id}, async function (err, data) {
       if (err) return console.log(err);
-      if (data) return data;
-    });
-    if (userOld) {
-      if (!userOld.username) {
-        userOld.username = ctx.chat.username || ctx.chat.first_name || null;
-        await userOld.save(function(err) {
+      if (data) {
+        if (!data.username) {
+          data.username = ctx.chat.username || ctx.chat.first_name || null;
+          await data.save(function(err) {
+            if(err) return console.log('startMiddelware', err);
+          })
+        };
+        if (!data.subscribeTournaments) {
+          await data.save(function(err) {
+            if(err) return console.log('startMiddelware', err);
+          })
+        };
+        ctx.session.user = data;
+      } else {
+        const user = new User({
+          username: ctx.chat.username || ctx.chat.first_name || null,
+          chat_id: ctx.chat.id,
+        });
+        await user.save(function(err) {
           if(err) return console.log('startMiddelware', err);
+          console.log(`Сохранен пользователь ${ctx.chat}`);
+          ctx.session.user = user;
         })
       }
-      ctx.session.user = userOld;
-    } else {
-      const user = new User({
-        username: ctx.chat.username || ctx.chat.first_name || null,
-        chat_id: ctx.chat.id,
-      });
-      await user.save(function(err) {
-        if(err) return console.log('startMiddelware', err);
-        console.log(`Сохранен пользователь ${ctx.chat}`);
-        ctx.session.user = user;
-      })
-    }
+    });
     await next()
   })
 }
