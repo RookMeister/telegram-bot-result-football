@@ -22,7 +22,7 @@ async function startScheduler(bot) {
         }
       };
     }
-  }, 5000000);
+  }, 600000);
 }
 
 async function sendMessage(ctx, chatId, info) {
