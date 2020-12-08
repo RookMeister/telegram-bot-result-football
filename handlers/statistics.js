@@ -1,6 +1,6 @@
 const { countryKeyBoardInline, viewResultKeyBoardInline, countryCode, viewCode} = require('../utils/keyBoards');
 const { getData } = require('../utils/helpers')
-const { dataConversionSports } = require('../utils/helpers')
+const { dataConversionSports, getDataSports } = require('../utils/helpers')
 
 function setupStat(bot) {
   bot.hears('Статистика', (ctx) => selectCountry(ctx));
@@ -21,7 +21,8 @@ async function selectyResult(ctx) {
 
 async function getResult(ctx) {
   const options = countryKeyBoardInline;
-  const data = await getData('sports', { country: ctx.session.countryCode, view: ctx.match.input });
+  const json = await getData('sports', { country: ctx.session.countryCode, view: ctx.match.input });
+  const data = getDataSports(json);
   const info = dataConversionSports(data, ctx.match.input);
   options.parse_mode = 'HTML';
   ctx.editMessageText(info, options);

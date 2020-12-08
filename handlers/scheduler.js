@@ -1,5 +1,5 @@
 const { getData } = require('../utils/helpers')
-const { dataConversionChampionat } = require('../utils/helpers')
+const { dataConversionChampionat, getDataChampionat } = require('../utils/helpers')
 const User = require('../models/user');
 
 let isSend = false;
@@ -11,18 +11,21 @@ async function startScheduler(bot) {
     const users = await User.find({});
     if (users.length && !isSend) {
       for (const el of users) {
-        const data = await getData('championat', { date: 'now', tournaments: el.subscribeTournaments, check: true, timeZone: Number(el.timeZone) });
-        let info = dataConversionChampionat(data);
-        info = (info === 'Нет подходящих матчей') ? '' : info;
-        if (info && el.onScheduler) {
-          await sendMessage(bot.telegram, el.chat_id, info);
-          isSend = true;
-        } else if (!data) {
-          isSend = false;
+        if (el.onScheduler) {
+          const json = await getData('championat', { date: 'now' });
+          const data = getDataChampionat(json, el.subscribeTournaments, Number(el.timeZone), true);
+          let info = dataConversionChampionat(data);
+          info = (info === 'Нет подходящих матчей') ? '' : info;
+          if (info) {
+            await sendMessage(bot.telegram, el.chat_id, info);
+            isSend = true;
+          } else if (!data) {
+            isSend = false;
+          }
         }
       };
     }
-  }, 600000);
+  }, 60000);
 }
 
 async function sendMessage(ctx, chatId, info) {

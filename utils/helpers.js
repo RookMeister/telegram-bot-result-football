@@ -50,8 +50,8 @@ async function getData(api, config) {
   const url = (api === 'sports') ? returnUrlSports(config) : returnUrlChampionat(config);
   const data = await fetch(url);
   const json = await data.json();
-  const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, config.tournaments, config.timeZone, config.check);
-  return result
+  // const result = (api === 'sports') ? getDataSports(json) : getDataChampionat(json, config.tournaments, config.timeZone, config.check);
+  return json
 }
 
 async function getTournaments() {
@@ -140,15 +140,16 @@ function getDataChampionat(data, subscriptions, timeZone, checkEnd = false) {
     return 'Ошибка';
   }
 }
+
 function dataConversionChampionat(data) {
   try {
     if (!data)  return 'Ошибка';
     let string = '';
     data.forEach(el => {
       if (el.title) {
-        string += `\r\n<i>${el.title}</i>\r\n\r\n`;
+        string += `\r\n<b><i>${el.title}</i></b>\r\n`;
       } else {
-        string += `${el.startTime[0]} <a href="http://championat.com${el.link}">${el.firstTeam.name} \u2014 ${el.secondTeam.name} </a>`;
+        string += `${(el.result) ? '' : el.startTime[0] + ' '}<a href="http://championat.com${el.link}">${el.firstTeam.name} \u2014 ${el.secondTeam.name} </a>`;
         string += (el.result)
                     ? `${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`
                     : `${el.status === 'Не начался' ? 'в ' + el.startTime[1] : el.status}\r\n`;
@@ -160,7 +161,6 @@ function dataConversionChampionat(data) {
     return 'Ошибка';
   }
 }
-
 function dataConversionSports(data, result) {
   try {
     if (!data && !result)  return 'Ошибка';
@@ -187,6 +187,8 @@ function dataConversionSports(data, result) {
 // Exports
 module.exports = {
   getData,
+  getDataSports,
+  getDataChampionat,
   dataConversionSports,
   dataConversionChampionat,
   getPaginationInfo,
