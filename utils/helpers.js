@@ -59,7 +59,7 @@ async function getTournaments() {
   const data = await fetch(url);
   const json = await data.json();
   const tournaments = (json[0].name === 'Футбол') ? json[0].tournaments : null;
-  return tournaments && tournaments.map(el => el.name)
+  return tournaments && tournaments.map(el => el.name);
 }
 
 async function getPaginationInfo(current, maxpage, tornaments) {
