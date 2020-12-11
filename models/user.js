@@ -27,11 +27,30 @@ const UserSchema = new Schema({
 	timeZone: { type: String, default: '0' },
   chat_id: { type: Number, unique: true },
   onScheduler: { type: Boolean, default: false },
-	createdAt: { type: String, default: new Date().toLocaleString('ru-RU', { hour12: false }) },
+	// createdAt: { type: String, default: new Date().toLocaleString('ru-RU', { hour12: false }) },
   subscribeTournaments: { type: [String], default: tournaments },
   likeClub: [String],
+}, {
+  timestamps: true,
 });
 
-const User = mongoose.model('user', UserSchema);
+const UserModel = mongoose.model('user', UserSchema);
 
-module.exports = User;
+async function findUser({id, username}) {
+  let user = await UserModel.findOne({ chat_id: id })
+  if (!user) {
+    try {
+      user = await new UserModel({ chat_id: id, username }).save()
+      console.log(`Сохранен пользователь ${username}`);
+    } catch (err) {
+      user = await UserModel.findOne({ chat_id: id })
+    }
+  }
+  return user
+}
+
+async function findAllUsers() {
+  return  UserModel.find({});
+}
+
+module.exports = { UserModel, findUser, findAllUsers };

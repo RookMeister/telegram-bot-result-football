@@ -1,6 +1,6 @@
 const Telegraf = require('telegraf');
 const Session = require('telegraf/session');
-const User = require('../models/user');
+const { findUser } = require('../models/user');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -23,20 +23,9 @@ function startBot() {
 function startMiddelware() {
   bot.use(Session());
   bot.use(async (ctx, next) => {
-    const userOld = await User.findOne({chat_id: ctx.chat.id});
-    if (userOld) {
-      ctx.session.user = userOld;
-    } else {
-      const user = new User({
-        username: ctx.chat.username || ctx.chat.first_name || null,
-        chat_id: ctx.chat.id,
-      });
-      user.save(function(err) {
-        if(err) return console.log('startMiddelware', err);
-        console.log(`Сохранен пользователь ${user.username}`);
-        ctx.session.user = user;
-      })
-    }
+    const username = ctx.chat.username || ctx.chat.first_name || null;
+    const dbuser = await findUser({id: ctx.chat.id, username});
+    ctx.session.user = dbuser;
     await next()
   })
 }

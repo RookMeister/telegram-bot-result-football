@@ -1,6 +1,6 @@
-const { footballScoresKeyBoardInline } = require('../utils/keyBoards');
-const { getData } = require('../utils/helpers')
-const { dataConversionChampionat, getDataChampionat } = require('../utils/helpers')
+const { dateKBInline } = require('../helpers/keyboards');
+const { getData } = require('../helpers/api')
+const { getDataMatches, conversionDataMatches } = require('../helpers/matches')
 
 function setupMatches(bot) {
   bot.hears('Матч-центр', (ctx) => getMatches(ctx, 'now'));
@@ -10,17 +10,17 @@ function setupMatches(bot) {
 }
 
 async function getMatches(ctx, date, editMessage) {
-  if (ctx.session.date === date) {
+  const userData = ctx.session.user;
+  const json = await getData('matches', { date });
+  const data = getDataMatches({data: json, subscriptions: userData.subscribeTournaments, timeZone: Number(userData.timeZone)});
+  const options = dateKBInline;
+  options.disable_web_page_preview = true;
+  const info = conversionDataMatches(data);
+  if (ctx.session.lastInfo === info) {
     await ctx.answerCbQuery('Уже выведено');
     return;
   }
-  ctx.session.date = date;
-  const userData = ctx.session.user;
-  const json = await getData('championat', { date });
-  const data = getDataChampionat(json, userData.subscribeTournaments, Number(userData.timeZone), false);
-  const options = footballScoresKeyBoardInline;
-  options.disable_web_page_preview = true;
-  const info = dataConversionChampionat(data);
+  ctx.session.lastInfo = info;
   if (editMessage) {
     options.parse_mode = 'HTML';
     ctx.editMessageText(info, options);

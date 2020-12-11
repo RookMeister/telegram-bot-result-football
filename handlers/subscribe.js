@@ -1,5 +1,5 @@
-const User = require('../models/user');
-const { subscribeAnswerKeyBoardInline, unSubscribeAnswerKeyBoardInline } = require('../utils/keyBoards');
+const { UserModel } = require('../models/user');
+const { subscribeKBInline, unSubscribeKBInline } = require('../helpers/keyboards');
 
 function setupSubscribe(bot) {
   bot.action('✔Подписаться', (ctx) => isSubscribe(ctx, true));
@@ -13,16 +13,16 @@ async function isSubscribe(ctx, isSubscribe = false) {
   if (isSubscribe) {
     info = 'Вы подписались';
     string = 'Теперь после окончания матчей, вам будет приходить пуш с результатами матчей.';
-    await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { onScheduler: true } }, function (err, data) {
+    await UserModel.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { onScheduler: true } }, function (err, data) {
       if (err) return console.log(err);
     });
-    keyboard = unSubscribeAnswerKeyBoardInline;
+    keyboard = unSubscribeKBInline;
   } else {
-    await User.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { onScheduler: false } }, function (err, data) {
+    await UserModel.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { onScheduler: false } }, function (err, data) {
       if (err) return console.log(err);
     });
     info = 'Вы отписались';
-    keyboard = subscribeAnswerKeyBoardInline;
+    keyboard = subscribeKBInline;
   }
   await ctx.answerCbQuery(info);
   ctx.editMessageText(string, keyboard);
