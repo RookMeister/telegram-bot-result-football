@@ -1,4 +1,6 @@
 const { inInline } = require('./keyboards');
+const { getData } = require('./api')
+const { getPagination } = require('./pagination');
 
 function getDataTournaments(data) {
   const tournaments = (data[0].name === 'Футбол') ? data[0].tournaments : null;
@@ -18,8 +20,16 @@ function conversionDataTournaments({current, userTornaments, allTornaments}) {
   return buttons;
 }
 
+async function tournamentsButtons({current, userTornaments}) {
+  const json = await getData('tornaments');
+  const allTornaments = getDataTournaments(json);
+  const options = conversionDataTournaments({current, userTornaments, allTornaments});
+  const pagination = getPagination({current, length: allTornaments.length});
+  options.reply_markup.inline_keyboard.push(pagination.reply_markup.inline_keyboard[0]);
+  return options;
+}
+
 // Exports
 module.exports = {
-  getDataTournaments,
-  conversionDataTournaments,
+  tournamentsButtons,
 }

@@ -5,9 +5,7 @@ const {
   viewSubscribeKBInline,
   backToKBInline,
 } = require('../helpers/keyboards');
-const { getData } = require('../helpers/api')
-const { getPagination } = require('../helpers/pagination');
-const { getDataTournaments, conversionDataTournaments } = require('../helpers/tornaments');
+const { tournamentsButtons} = require('../helpers/tornaments');
 const { UserModel } = require('../models/user');
 
 function setupSettings(bot) {
@@ -16,7 +14,7 @@ function setupSettings(bot) {
   bot.action('Подписки', (ctx) => selectSubcribeView(ctx));
   bot.action('Турниры', (ctx) => paginationSubscribe(ctx, 1));
   bot.action('Клубы', (ctx) => subscribesClubs(ctx));
-  bot.action('🔙Назад', (ctx) => showSettings(ctx, true));
+  bot.action('🔙Назад к настройкам', (ctx) => showSettings(ctx, true));
   bot.action('О боте', (ctx) => about(ctx));
   bot.on('callback_query', (ctx) => callbackQuery(ctx));
 }
@@ -36,7 +34,6 @@ async function callbackQuery(ctx) {
   const query = ctx.callbackQuery.data;
   const re = new RegExp('✅|🚫');
   if (re.test(query)) {
-    console.log(1);
     let info = '';
     const isReg = new RegExp('✅');
     const notIsReg = new RegExp('🚫');
@@ -52,11 +49,7 @@ async function callbackQuery(ctx) {
     }
     const current = ctx.session.currentPage || 1;
     await ctx.answerCbQuery(info);
-    const json = await getData('tornaments');
-    const allTornaments = getDataTournaments(json);
-    const options = conversionDataTournaments({current, userTornaments, allTornaments});
-    const pagination = getPagination({current, length: allTornaments.length});
-    options.reply_markup.inline_keyboard.push(pagination.reply_markup.inline_keyboard[0]);
+    const options = await tournamentsButtons({current, userTornaments})
     ctx.editMessageReplyMarkup(options.reply_markup);
   } else {
     paginationSubscribe(ctx);
@@ -67,11 +60,7 @@ async function paginationSubscribe(ctx, curentPage) {
   const userTornaments = ctx.session.user.subscribeTournaments;
   const current = curentPage || parseInt(ctx.callbackQuery.data.match(/\d+/))
   ctx.session.currentPage = current;
-  const json = await getData('tornaments');
-  const allTornaments = getDataTournaments(json);
-  const options = conversionDataTournaments({current, userTornaments, allTornaments});
-  const pagination = getPagination({current, length: allTornaments.length});
-  options.reply_markup.inline_keyboard.push(pagination.reply_markup.inline_keyboard[0]);
+  const options = await tournamentsButtons({current, userTornaments})
   options.reply_markup.inline_keyboard.push(backToKBInline.reply_markup.inline_keyboard[0]);
   const info = `Страница №${current}`;
   ctx.editMessageText(info, options);
