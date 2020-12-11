@@ -25,11 +25,11 @@ const inInline = (array, size = 3, column = false) => {
   return Markup.inlineKeyboard([...res]).extra();
 };
 
-const backToKey = [ '🔙Назад' ];
-const unSubscribeKey = [ '✖Отписаться', '🔙Назад' ];
-const subscribeKey = [ '✔Подписаться', '🔙Назад' ];
+const backToKey = [ '🔙Назад к настройкам' ];
+const unSubscribeKey = [ '✖Отписаться', '🔙Назад к настройкам' ];
+const subscribeKey = [ '✔Подписаться', '🔙Назад к настройкам' ];
 const dateKey = [ 'Вчера', 'Сегодня', 'Завтра' ];
-const viewSubscribeKey = [ 'Турниры', 'Клубы', '🔙Назад' ];
+const viewSubscribeKey = [ 'Турниры', 'Клубы', '🔙Назад к настройкам' ];
 const countryKey = [
   { title: '🇷🇺', value: 31 },
   { title: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', value: 52 },
