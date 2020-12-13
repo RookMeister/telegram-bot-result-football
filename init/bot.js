@@ -1,6 +1,7 @@
 const Telegraf = require('telegraf');
 const Session = require('telegraf/session');
 const { findUser } = require('../models/user');
+const { stage } = require('./scene');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -22,6 +23,7 @@ function startBot() {
 
 function startMiddelware() {
   bot.use(Session());
+  bot.use(stage.middleware());
   bot.use(async (ctx, next) => {
     const username = ctx.chat.username || ctx.chat.first_name || null;
     const dbuser = await findUser({id: ctx.chat.id, username});

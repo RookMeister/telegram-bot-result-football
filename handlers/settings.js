@@ -1,4 +1,6 @@
 const {
+  countryKey,
+  countryKBInline,
   settingsKBInline,
   unSubscribeKBInline,
   subscribeKBInline,
@@ -7,16 +9,30 @@ const {
 } = require('../helpers/keyboards');
 const { tournamentsButtons} = require('../helpers/tornaments');
 const { UserModel } = require('../models/user');
+const { getData } = require('../helpers/api');
+const { getDataStat } = require('../helpers/statistics');
+const { clubs } = require('../init/scene');
+
+clubs.enter((ctx) => subscribesClubs(ctx));
+clubs.action(new RegExp(countryKey.map(el => el.value).join("|")), (ctx) => ggg(ctx));
 
 function setupSettings(bot) {
   bot.hears('Настройки', (ctx) => showSettings(ctx));
   bot.action('Рассылки', (ctx) => subscribesList(ctx));
   bot.action('Подписки', (ctx) => selectSubcribeView(ctx));
   bot.action('Турниры', (ctx) => paginationSubscribe(ctx, 1));
-  bot.action('Клубы', (ctx) => subscribesClubs(ctx));
+  bot.action('Клубы', (ctx) => ctx.scene.enter('clubs'));
+  // bot.action('Клубы', (ctx) => subscribesClubs(ctx));
   bot.action('🔙Назад к настройкам', (ctx) => showSettings(ctx, true));
   bot.action('О боте', (ctx) => about(ctx));
   bot.on('callback_query', (ctx) => callbackQuery(ctx));
+}
+
+async function ggg(ctx) {
+  const json = await getData('stat', { country: ctx.session.countryCode, view: 'tournament_table' });
+  const data = getDataStat(json);
+  console.log(data)
+  ctx.scene.leave();
 }
 
 function selectSubcribeView(ctx) {
@@ -26,7 +42,10 @@ function selectSubcribeView(ctx) {
 }
 
 function subscribesClubs(ctx) {
-  ctx.answerCbQuery('Скоро');
+  const info = 'Выберите чемпионат.';
+  const options =  countryKBInline;
+  ctx.editMessageText(info, options);
+  // ctx.answerCbQuery('Скоро');
 }
 
 async function callbackQuery(ctx) {
