@@ -3,9 +3,11 @@ const startOfTomorrow = require('date-fns/startOfTomorrow');
 const startOfYesterday = require('date-fns/startOfYesterday');
 const startOfToday = require('date-fns/startOfToday');
 const parseISO = require('date-fns/parseISO')
+const formatDistanceToNow = require('date-fns/formatDistanceToNow');
 const isPast = require('date-fns/isPast')
 const format = require('date-fns/format');
 const addHours = require('date-fns/addHours');
+const ru = require( 'date-fns/locale/ru');
 
 
 function dayToIso(day) {
@@ -26,8 +28,14 @@ function getHoursTimeZone(date, hours) {
   return [format(dateNew, 'd.M'), format(dateNew, 'HH:mm')];
 }
 
+function getDistanceToNow(date, hours) {
+  const dateNew = addHours(parseISO(date), hours - 3);
+  return formatDistanceToNow(dateNew, {locale: ru, addSuffix: true});
+}
+
 module.exports = {
   dayToIso,
   isPastDate,
+  getDistanceToNow,
   getHoursTimeZone,
 }

@@ -1,4 +1,4 @@
-const { getHoursTimeZone } = require('./date');
+const { getHoursTimeZone, getDistanceToNow } = require('./date');
 
 function getDataMatches({data, subscriptions, timeZone, checkEnd = false}) {
   try {
@@ -41,16 +41,17 @@ function getInfoForLike({data, likeClubs, timeZone}) {
       for (const el of value.matches) {
         matches.push({
           startTime: getHoursTimeZone(`${el.date} ${el.time}`, timeZone),
-          title: el.teams[0] + ' - ' + el.teams[1],
+          title: `${el.teams[0].name} - ${el.teams[1].name}`,
+          distanceHours: getDistanceToNow(`${el.date} ${el.time}`, timeZone),
         })
       }
     }
-
     for (const el of likeClubs) {
       const data = matches.find(item => item.title.includes(el));
       data && result.push(data);
     }
-    return conversionDataMatchesForLike(result);
+    const info = conversionDataMatchesForLike(result);
+    return info;
   } catch (err) {
     console.error('getDataMatchesForLike', err);
     return 'Ошибка';
@@ -59,12 +60,12 @@ function getInfoForLike({data, likeClubs, timeZone}) {
 
 function conversionDataMatchesForLike(data) {
   try {
-    console.log(data);
-    if (!data || data.length)  return 'Нет подходящих матчей';
-    let string = `\r\n<b><i>Сегодня играет ваша любимая команда</i></b>\r\n`;
+    if (!data.length) return null;
+    let string = `\r\n<b><i>Сегодня играет ваша любимая команда</i></b>\r\n\r\n`;
     data.forEach(el => {
-      string += `${el.startTime[0] + ' ' + el.title + ' в ' + el.startTime[1]}\r\n`;
+      string += `${el.title} (${el.distanceHours})\r\n`;
     });
+    return string;
   } catch (err) {
     console.error('conversionDataMatchesForLike', err);
     return 'Ошибка';

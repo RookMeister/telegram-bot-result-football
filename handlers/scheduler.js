@@ -3,25 +3,26 @@ const { getDataMatches, conversionDataMatches, getInfoForLike } = require('../he
 const { findAllUsers } = require('../models/user');
 
 let isSend = false;
+let isSendClubs = false;
 
 const timeoutPromise = (timeout) => new Promise((resolve) => setTimeout(resolve, timeout));
 
 async function startScheduler(bot) {
   setInterval(async () => {
     const users = await findAllUsers();
-    if (users.length && !isSend) {
+    if (users.length) {
       for (const el of users) {
         if (el.onScheduler || el.likeClub.length) {
-          const json = await getData('matches', { date: 'prev' });
-          let info = null;
+          const json = await getData('matches', { date: 'now' });
           if (el.onScheduler) {
-            info = getMatches({json, subscriptions: el.subscribeTournaments, timeZone: Number(el.timeZone), checkEnd: true});
-            // info && await sendMessage(bot.telegram, el.chat_id, info);
-            // isSend = (info) ? true : false;
+            const info = getMatches({json, subscriptions: el.subscribeTournaments, timeZone: Number(el.timeZone), checkEnd: true});
+            info && !isSend && await sendMessage(bot.telegram, el.chat_id, info);
+            isSend = (info) ? true : false;
           }
           if (el.likeClub.length) {
-            info = getInfoForLike({data: json, likeClubs: el.likeClub, timeZone: Number(el.timeZone) })
-            info && await sendMessage(bot.telegram, el.chat_id, info);
+            const info = getInfoForLike({data: json, likeClubs: el.likeClub, timeZone: Number(el.timeZone) })
+            info && info.includes('10') && !isSendClubs && await sendMessage(bot.telegram, el.chat_id, info, 'club');
+            isSendClubs = (info) ? true : false;
           }
         }
       };
