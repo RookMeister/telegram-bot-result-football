@@ -1,5 +1,5 @@
 const { getData } = require('../helpers/api')
-const { getDataMatches, conversionDataMatches } = require('../helpers/matches')
+const { getDataMatches, conversionDataMatches, getInfoForLike } = require('../helpers/matches')
 const { findAllUsers } = require('../models/user');
 
 let isSend = false;
@@ -11,21 +11,28 @@ async function startScheduler(bot) {
     const users = await findAllUsers();
     if (users.length && !isSend) {
       for (const el of users) {
-        if (el.onScheduler) {
-          const json = await getData('matches', { date: 'now' });
-          const data = getDataMatches({data: json, subscriptions: el.subscribeTournaments, timeZone: Number(el.timeZone), checkEnd: true});
-          let info = conversionDataMatches(data);
-          info = (info === 'Нет подходящих матчей') ? '' : info;
-          if (info) {
-            await sendMessage(bot.telegram, el.chat_id, info);
-            isSend = true;
-          } else if (!data) {
-            isSend = false;
+        if (el.onScheduler || el.likeClub.length) {
+          const json = await getData('matches', { date: 'prev' });
+          let info = null;
+          if (el.onScheduler) {
+            info = getMatches({json, subscriptions: el.subscribeTournaments, timeZone: Number(el.timeZone), checkEnd: true});
+            // info && await sendMessage(bot.telegram, el.chat_id, info);
+            // isSend = (info) ? true : false;
+          }
+          if (el.likeClub.length) {
+            info = getInfoForLike({data: json, likeClubs: el.likeClub, timeZone: Number(el.timeZone) })
+            info && await sendMessage(bot.telegram, el.chat_id, info);
           }
         }
       };
     }
-  }, 60000);
+  }, 5000);
+}
+
+function getMatches({json, subscriptions, timeZone, checkEnd}) {
+  const data = getDataMatches({data: json, subscriptions, timeZone, checkEnd});
+  const info = conversionDataMatches(data);
+  return (info === 'Нет подходящих матчей') ? null : info;
 }
 
 async function sendMessage(ctx, chatId, info) {

@@ -32,6 +32,45 @@ function getDataMatches({data, subscriptions, timeZone, checkEnd = false}) {
   }
 }
 
+function getInfoForLike({data, likeClubs, timeZone}) {
+  try {
+    const tournaments = data.matches.football.tournaments;
+    const matches = [];
+    const result = [];
+    for (const value of Object.values(tournaments)) {
+      for (const el of value.matches) {
+        matches.push({
+          startTime: getHoursTimeZone(`${el.date} ${el.time}`, timeZone),
+          title: el.teams[0] + ' - ' + el.teams[1],
+        })
+      }
+    }
+
+    for (const el of likeClubs) {
+      const data = matches.find(item => item.title.includes(el));
+      data && result.push(data);
+    }
+    return conversionDataMatchesForLike(result);
+  } catch (err) {
+    console.error('getDataMatchesForLike', err);
+    return 'Ошибка';
+  }
+}
+
+function conversionDataMatchesForLike(data) {
+  try {
+    console.log(data);
+    if (!data || data.length)  return 'Нет подходящих матчей';
+    let string = `\r\n<b><i>Сегодня играет ваша любимая команда</i></b>\r\n`;
+    data.forEach(el => {
+      string += `${el.startTime[0] + ' ' + el.title + ' в ' + el.startTime[1]}\r\n`;
+    });
+  } catch (err) {
+    console.error('conversionDataMatchesForLike', err);
+    return 'Ошибка';
+  }
+}
+
 function conversionDataMatches(data) {
   try {
     if (!data)  return 'Ошибка';
@@ -57,4 +96,5 @@ function conversionDataMatches(data) {
 module.exports = {
   getDataMatches,
   conversionDataMatches,
+  getInfoForLike,
 }
