@@ -27,7 +27,7 @@ async function startScheduler(bot) {
         }
       };
     }
-  }, 5000);
+  }, 300000);
 }
 
 function getMatches({json, subscriptions, timeZone, checkEnd}) {
