@@ -41,52 +41,67 @@ tornaments.on('callback_query', (ctx) => callbackQuery(ctx, 'tornaments'));
 //
 
 async function getAllListSubscribe(ctx, viewSubscribe) {
-  const data = (viewSubscribe === 'clubs') ? await getDataClubs(ctx.match.input): await getDataTournaments();
-  ctx.session.allData = data;
-  listSubscribe(ctx, 1, viewSubscribe)
+  try {
+    const data = (viewSubscribe === 'clubs') ? await getDataClubs(ctx.match.input): await getDataTournaments();
+    ctx.session.allData = data;
+    listSubscribe(ctx, 1, viewSubscribe)
+  } catch (err) {
+    console.error('getAllListSubscribe', err);
+    return 'Ошибка';
+  }
 }
 
 async function listSubscribe(ctx, curentPage, viewSubscribe) {
-  const current = curentPage || parseInt(ctx.callbackQuery.data.match(/\d+/))
-  ctx.session.currentPagePagination = current;
-  const allData = ctx.session.allData;
-  const userData = (viewSubscribe === 'clubs') ? ctx.session.user.likeClub : ctx.session.user.subscribeTournaments;
-  const options = (viewSubscribe === 'clubs')
-                  ? await clubsButtons({current, userData, allData})
-                  : await tournamentsButtons({current, userData, allData});
-  options.reply_markup.inline_keyboard.push(backToKBInline.reply_markup.inline_keyboard[0]);
-  const info = `${(viewSubscribe === 'clubs') ? 'Клубы. ' : 'Турниры. '}Страница №${current}`;
-  ctx.editMessageText(info, options);
-}
-
-async function callbackQuery(ctx, viewSubscribe) {
-  let userData = null;
-  const allData = ctx.session.allData;
-  const query = ctx.callbackQuery.data;
-  const re = new RegExp('✅|🚫');
-  if (re.test(query)) {
-    let info = '';
-    let data = null;
-    const isReg = new RegExp('✅');
-    const notIsReg = new RegExp('🚫');
-    const val = query.replace(re, '').trim();
-    const value = (viewSubscribe === 'clubs') ? { likeClub: val } : { subscribeTournaments: val };
-    if (notIsReg.test(query)) {
-      data = await UserModel.findOneAndUpdate({chat_id: ctx.chat.id}, { $addToSet : value}, { new: true } );
-      info = 'Подписался';
-    } else if (isReg.test(query)) {
-      data = await UserModel.findOneAndUpdate({chat_id: ctx.chat.id}, { $pull : value}, { new: true });
-      info = 'Отписался';
-    }
-    userData = (viewSubscribe === 'clubs') ? data.likeClub : data.subscribeTournaments;
-    const current = ctx.session.currentPagePagination || 1;
-    await ctx.answerCbQuery(info);
+  try {
+    const current = curentPage || parseInt(ctx.callbackQuery.data.match(/\d+/))
+    ctx.session.currentPagePagination = current;
+    const allData = ctx.session.allData;
+    const userData = (viewSubscribe === 'clubs') ? ctx.session.user.likeClub : ctx.session.user.subscribeTournaments;
     const options = (viewSubscribe === 'clubs')
                     ? await clubsButtons({current, userData, allData})
                     : await tournamentsButtons({current, userData, allData});
-    ctx.editMessageReplyMarkup(options.reply_markup);
-  } else {
-    listSubscribe(ctx, 0, viewSubscribe);
+    options.reply_markup.inline_keyboard.push(backToKBInline.reply_markup.inline_keyboard[0]);
+    const info = `${(viewSubscribe === 'clubs') ? 'Клубы. ' : 'Турниры. '}Страница №${current}`;
+    ctx.editMessageText(info, options);
+  } catch (err) {
+    console.error('listSubscribe', err);
+    return 'Ошибка';
+  }
+}
+
+async function callbackQuery(ctx, viewSubscribe) {
+  try {
+    let userData = null;
+    const allData = ctx.session.allData;
+    const query = ctx.callbackQuery.data;
+    const re = new RegExp('✅|🚫');
+    if (re.test(query)) {
+      let info = '';
+      let data = null;
+      const isReg = new RegExp('✅');
+      const notIsReg = new RegExp('🚫');
+      const val = query.replace(re, '').trim();
+      const value = (viewSubscribe === 'clubs') ? { likeClub: val } : { subscribeTournaments: val };
+      if (notIsReg.test(query)) {
+        data = await UserModel.findOneAndUpdate({chat_id: ctx.chat.id}, { $addToSet : value}, { new: true } );
+        info = 'Подписался';
+      } else if (isReg.test(query)) {
+        data = await UserModel.findOneAndUpdate({chat_id: ctx.chat.id}, { $pull : value}, { new: true });
+        info = 'Отписался';
+      }
+      userData = (viewSubscribe === 'clubs') ? data.likeClub : data.subscribeTournaments;
+      const current = ctx.session.currentPagePagination || 1;
+      await ctx.answerCbQuery(info);
+      const options = (viewSubscribe === 'clubs')
+                      ? await clubsButtons({current, userData, allData})
+                      : await tournamentsButtons({current, userData, allData});
+      ctx.editMessageReplyMarkup(options.reply_markup);
+    } else {
+      listSubscribe(ctx, 0, viewSubscribe);
+    }
+  } catch (err) {
+    console.error('callbackQuery', err);
+    return 'Ошибка';
   }
 }
 

@@ -15,13 +15,23 @@ function conversionDataForPagination({current, userData, allData, countItem}) {
 
 function getPagination({current, length, countItem}) {
   const maxPages = Math.ceil(length/countItem);
-  const pagination1 = (current < 4) ? '1' : '<<1';
-  const pagination2 = (current < 4) ? '2' : (current-1).toString();
-  const pagination3 = (current < 4) ? '3' : current.toString();
-  const pagination4 = (current < 4) ? '4' : (current+1).toString();
-  const pagination5 = (current < maxPages) ? maxPages+'>>' : maxPages.toString();
-  const buttonsArray = [pagination1, pagination2, pagination3, pagination4, pagination5]
-  const buttons = inInline(buttonsArray, 5);
+  const maxButtons = (maxPages < 5) ? maxPages : 5;
+  let startPage = Math.max(current - Math.floor(maxButtons / 2), 1);
+  let endPage = startPage + maxButtons;
+  let lastPag = maxPages + '>>';
+  if (endPage > maxPages) {
+    endPage = maxPages;
+    startPage = endPage - maxButtons + 1;
+    lastPag = maxPages;
+  }
+  let firstPag = (startPage > 1) ? '<<1' : startPage;
+  const buttonsArray = [];
+  for (let i = startPage; i < endPage; i++) {
+    buttonsArray.push(i.toString())
+  }
+  buttonsArray[0] = firstPag.toString();
+  buttonsArray[maxButtons-1] = lastPag.toString();
+  const buttons = inInline(buttonsArray, maxButtons);
   return buttons;
 }
 
