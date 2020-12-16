@@ -21,13 +21,13 @@ async function startScheduler(bot) {
           }
           if (el.likeClub.length) {
             const info = getInfoForLike({data: json, likeClubs: el.likeClub, timeZone: Number(el.timeZone) })
-            info && info.includes('10') && !isSendClubs && await sendMessage(bot.telegram, el.chat_id, info, 'club');
+            info && info.includes('10') && !isSendClubs && await sendMessage(bot.telegram, el.chat_id, info);
             isSendClubs = (info) ? true : false;
           }
         }
       };
     }
-  }, 300000);
+  }, 60000);
 }
 
 function getMatches({json, subscriptions, timeZone, checkEnd}) {
