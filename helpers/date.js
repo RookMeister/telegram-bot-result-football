@@ -28,8 +28,8 @@ function getHoursTimeZone(date, hours) {
   return [format(dateNew, 'd.M'), format(dateNew, 'HH:mm')];
 }
 
-function getDistanceToNow(date, hours) {
-  const dateNew = addHours(parseISO(date), hours - 3);
+function getDistanceToNow(date) {
+  const dateNew = addHours(parseISO(date), -3);
   return formatDistanceToNow(dateNew, {locale: ru, addSuffix: true});
 }
 

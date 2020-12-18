@@ -42,7 +42,7 @@ function getInfoForLike({data, likeClubs, timeZone}) {
         matches.push({
           startTime: getHoursTimeZone(`${el.date} ${el.time}`, timeZone),
           title: `${el.teams[0].name} - ${el.teams[1].name}`,
-          distanceHours: getDistanceToNow(`${el.date} ${el.time}`, timeZone),
+          distanceHours: getDistanceToNow(`${el.date} ${el.time}`),
         })
       }
     }

@@ -20,9 +20,10 @@ async function startScheduler(bot) {
             isSend = (info) ? true : false;
           }
           if (el.likeClub.length) {
-            const info = getInfoForLike({data: json, likeClubs: el.likeClub, timeZone: Number(el.timeZone) })
-            info && info.includes('10') && !isSendClubs && await sendMessage(bot.telegram, el.chat_id, info);
-            isSendClubs = (info) ? true : false;
+            const info = getInfoForLike({data: json, likeClubs: el.likeClub, timeZone: Number(el.timeZone)})
+            const condition = info && info.includes('10');
+            condition && !isSendClubs && await sendMessage(bot.telegram, el.chat_id, info);
+            isSendClubs = (condition) ? true : false;
           }
         }
       };
