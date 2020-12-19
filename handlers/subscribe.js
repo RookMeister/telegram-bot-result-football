@@ -95,6 +95,7 @@ async function callbackQuery(ctx, viewSubscribe) {
       const options = (viewSubscribe === 'clubs')
                       ? await clubsButtons({current, userData, allData})
                       : await tournamentsButtons({current, userData, allData});
+      options.reply_markup.inline_keyboard.push(backToKBInline.reply_markup.inline_keyboard[0]);
       ctx.editMessageReplyMarkup(options.reply_markup);
     } else {
       listSubscribe(ctx, 0, viewSubscribe);
