@@ -25,7 +25,7 @@ async function startScheduler(bot) {
           }
           if (el.likeClub.length) {
             const info = getInfoForLike({data: json, likeClubs: el.likeClub, timeZone: Number(el.timeZone)})
-            const condition = info && info.includes('10');
+            const condition = info && info.includes('приблизительно через 10');
             condition && !isSendClubs[i] && await sendMessage(bot.telegram, el.chat_id, info);
             isSendClubs[i] = (condition) ? true : false;
           }
