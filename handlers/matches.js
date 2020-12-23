@@ -16,7 +16,7 @@ async function getMatches(ctx, date, editMessage) {
   const options = dateKBInline;
   options.disable_web_page_preview = true;
   const info = conversionDataMatches(data);
-  if (ctx.session.lastInfo === info) {
+  if (ctx.session.lastInfo === info && !editMessage) {
     await ctx.answerCbQuery('Уже выведено');
     return;
   }
