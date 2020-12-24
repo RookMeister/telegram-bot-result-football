@@ -20,7 +20,7 @@ async function startScheduler(bot) {
           const json = await getData('matches', { date: 'now' });
           if (el.onScheduler) {
             const info = getMatches({json, subscriptions: el.subscribeTournaments, timeZone: Number(el.timeZone), checkEnd: true});
-            info && !isSend && await sendMessage(bot.telegram, el.chat_id, info);
+            info && !isSend[i] && await sendMessage(bot.telegram, el.chat_id, info);
             isSend[i] = (info) ? true : false;
           }
           if (el.likeClub.length) {
