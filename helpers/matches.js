@@ -74,7 +74,7 @@ function conversionDataMatchesForLike(data) {
 
 function conversionDataMatches(data) {
   try {
-    if (!data)  return 'Ошибка';
+    if (!data)  return 'Нет подходящих матчей';
     let string = '';
     data.forEach(el => {
       if (el.title) {
