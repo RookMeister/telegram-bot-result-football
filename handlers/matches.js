@@ -1,4 +1,4 @@
-const { dateKBInline } = require('../helpers/keyboards');
+const { dateKBInline, deleteKBInline } = require('../helpers/keyboards');
 const { getData } = require('../helpers/api')
 const { getDataMatches, conversionDataMatches } = require('../helpers/matches')
 
@@ -14,6 +14,7 @@ async function getMatches(ctx, date, editMessage) {
   const json = await getData('matches', { date });
   const data = getDataMatches({data: json, subscriptions: userData.subscribeTournaments, timeZone: Number(userData.timeZone)});
   const options = dateKBInline;
+  options.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
   options.disable_web_page_preview = true;
   const info = conversionDataMatches(data);
   if (ctx.session.lastInfo === info && !editMessage) {

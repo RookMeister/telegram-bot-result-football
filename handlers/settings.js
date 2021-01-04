@@ -12,6 +12,7 @@ function setupSettings(bot) {
   bot.action('Рассылки', (ctx) => subscribesList(ctx));
   bot.action('Подписки', (ctx) => selectSubcribeView(ctx));
   bot.action('🔙Назад к настройкам', (ctx) => showSettings(ctx, true));
+  bot.action('❌ Удалить', (ctx) => deleteMess(ctx));
   bot.action('О боте', (ctx) => about(ctx));
 }
 
@@ -19,6 +20,10 @@ function selectSubcribeView(ctx) {
   const options = viewSubscribeKBInline;
   const info = 'Выберите вид пописки.';
   ctx.editMessageText(info, options);
+}
+
+function deleteMess(ctx) {
+  ctx.deleteMessage();
 }
 
 function subscribesList(ctx) {

@@ -27,7 +27,8 @@ const UserSchema = new Schema({
 	timeZone: { type: String, default: '0' },
   chat_id: { type: Number, unique: true },
   onScheduler: { type: Boolean, default: false },
-	// createdAt: { type: String, default: new Date().toLocaleString('ru-RU', { hour12: false }) },
+  isSendMatches: { type: Boolean, default: false },
+  isSendLikeClub: { type: Boolean, default: false },
   subscribeTournaments: { type: [String], default: tournaments },
   likeClub: [String],
 }, {

@@ -55,6 +55,7 @@ const timeZoneKBInline = inInline(timeZoneKey, 6);
 const settingsKBInline = inInline(settingsKey, 3, true);
 const viewSubscribeKBInline = inInline(viewSubscribeKey, 2);
 const backToKBInline = inInline(backToKey, 1);
+const deleteKBInline = inInline(['❌ Удалить'], 1);
 
 const mainKeyboard = Markup.keyboard([[{text: 'Матч-центр'}, {text: 'Статистика'}], [{text: 'Настройки'}]]).resize().extra();
 
@@ -74,4 +75,5 @@ module.exports = {
   viewSubscribeKBInline,
   backToKBInline,
   mainKeyboard,
+  deleteKBInline,
 }
