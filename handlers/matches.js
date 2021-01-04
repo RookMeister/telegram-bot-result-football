@@ -14,10 +14,9 @@ async function getMatches(ctx, date, editMessage) {
   const json = await getData('matches', { date });
   const data = getDataMatches({data: json, subscriptions: userData.subscribeTournaments, timeZone: Number(userData.timeZone)});
   const options = dateKBInline;
-  options.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
   options.disable_web_page_preview = true;
   const info = conversionDataMatches(data);
-  if (ctx.session.lastInfo === info && !editMessage) {
+  if (ctx.session.lastInfo === info) {
     await ctx.answerCbQuery('Уже выведено');
     return;
   }
@@ -26,6 +25,7 @@ async function getMatches(ctx, date, editMessage) {
     options.parse_mode = 'HTML';
     ctx.editMessageText(info, options);
   } else {
+    options.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
     ctx.replyWithHTML(info, options);
   }
 }
