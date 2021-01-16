@@ -40,7 +40,7 @@ async function startScheduler(bot) {
         }
       };
     }
-  }, 6000);
+  }, 60000);
 }
 
 function getMatches({json, subscriptions, timeZone, checkEnd}) {
