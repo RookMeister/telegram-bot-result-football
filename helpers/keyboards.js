@@ -57,6 +57,10 @@ const viewSubscribeKBInline = inInline(viewSubscribeKey, 2);
 const backToKBInline = inInline(backToKey, 1);
 const deleteKBInline = inInline(['❌ Удалить'], 1);
 
+countryKBInline.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
+statViewKBInline.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
+dateKBInline.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
+
 const mainKeyboard = Markup.keyboard([[{text: 'Матч-центр'}, {text: 'Статистика'}], [{text: 'Настройки'}]]).resize().extra();
 
 // Exports

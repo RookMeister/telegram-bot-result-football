@@ -1,4 +1,4 @@
-const { dateKBInline, deleteKBInline } = require('../helpers/keyboards');
+const { dateKBInline } = require('../helpers/keyboards');
 const { getData } = require('../helpers/api')
 const { getDataMatches, conversionDataMatches } = require('../helpers/matches')
 
@@ -25,7 +25,6 @@ async function getMatches(ctx, date, editMessage) {
     options.parse_mode = 'HTML';
     ctx.editMessageText(info, options);
   } else {
-    options.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
     ctx.replyWithHTML(info, options);
   }
 }

@@ -1,4 +1,4 @@
-const { countryKBInline, statViewKBInline, countryKey, statViewKey} = require('../helpers/keyboards');
+const { countryKBInline, statViewKBInline, countryKey, statViewKey } = require('../helpers/keyboards');
 const { getData } = require('../helpers/api')
 const { getDataStat, conversionDataStat } = require('../helpers/statistics')
 
