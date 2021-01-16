@@ -61,9 +61,10 @@ function getInfoForLike({data, likeClubs, timeZone}) {
 function conversionDataMatchesForLike(data) {
   try {
     if (!data.length) return null;
-    let string = `\r\n<b><i>Сегодня играет ваша любимая команда</i></b>\r\n\r\n`;
+    // let string = `\r\n<b><i>Сегодня играет ваша любимая команда</i></b>\r\n\r\n`;
+    let string = '';
     data.forEach(el => {
-      string += `${el.title} (${el.distanceHours})\r\n`;
+      string += `\r\n<b><i>Сегодня играет ${el.startTime[0] + el.title + 'в ' + el.startTime[1]} </i></b>\r\n(${el.distanceHours})\r\n`;
     });
     return string;
   } catch (err) {
@@ -80,7 +81,7 @@ function conversionDataMatches(data) {
       if (el.title) {
         string += `\r\n<b><i>${el.title}</i></b>\r\n`;
       } else {
-        string += `${(el.result) ? '' : el.startTime[0] + ' '}<a href="http://championat.com${el.link}">${el.firstTeam.name} \u2014 ${el.secondTeam.name} </a>`;
+        string += `${(el.result || el.status === 'Перенесён') ? '' : el.startTime[0] + ' '}<a href="http://championat.com${el.link}">${el.firstTeam.name} \u2014 ${el.secondTeam.name} </a>`;
         string += (el.result)
                     ? `${el.result.detailed.goal1}:${el.result.detailed.goal2} (${el.status})\r\n`
                     : `${el.status === 'Не начался' ? 'в ' + el.startTime[1] : el.status}\r\n`;

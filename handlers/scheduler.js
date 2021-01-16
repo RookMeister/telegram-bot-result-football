@@ -26,7 +26,9 @@ async function startScheduler(bot) {
           }
           if (user.likeClub.length) {
             const info = getInfoForLike({data: json, likeClubs: user.likeClub, timeZone: Number(user.timeZone)})
-            const condition = info && info.includes('приблизительно через 10');
+            const nowDate = new Date();
+            nowDate.setHours(nowDate.getHours() + Number(user.timeZone))
+            const condition = (nowDate.getHours()) === 10 ? true : false;
             condition && !user.isSendLikeClub && await sendMessage(bot.telegram, user.chat_id, info);
             const data = condition ? { isSendLikeClub: true } : { isSendLikeClub: false };
             if (user.isSendLikeClub !== data.isSendLikeClub) {
@@ -38,7 +40,7 @@ async function startScheduler(bot) {
         }
       };
     }
-  }, 60000);
+  }, 6000);
 }
 
 function getMatches({json, subscriptions, timeZone, checkEnd}) {
