@@ -64,7 +64,7 @@ function conversionDataMatchesForLike(data) {
     // let string = `\r\n<b><i>Сегодня играет ваша любимая команда</i></b>\r\n\r\n`;
     let string = '';
     data.forEach(el => {
-      string += `\r\n<i>Сегодня играет\r\n${el.startTime[0] + el.title + ' в ' + el.startTime[1]}</i>(${el.distanceHours})\r\n`;
+      string += `\r\n<i>Сегодня играет\r\n${el.startTime[0]} ${el.title} в ${el.startTime[1]}</i> (${el.distanceHours})\r\n`;
     });
     return string;
   } catch (err) {
