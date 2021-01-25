@@ -28,7 +28,7 @@ async function startScheduler(bot) {
             const info = getInfoForLike({data: json, likeClubs: user.likeClub, timeZone: Number(user.timeZone)})
             const nowDate = new Date();
             nowDate.setHours(nowDate.getHours() + Number(user.timeZone))
-            const condition = (nowDate.getHours()) === 10 ? true : false;
+            const condition = (nowDate.getHours()) === 10 ? true : (info.includes('Результат')) ? true : false;
             condition && !user.isSendLikeClub && await sendMessage(bot.telegram, user.chat_id, info);
             const data = condition ? { isSendLikeClub: true } : { isSendLikeClub: false };
             if (user.isSendLikeClub !== data.isSendLikeClub) {

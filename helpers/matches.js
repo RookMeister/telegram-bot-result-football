@@ -43,6 +43,7 @@ function getInfoForLike({data, likeClubs, timeZone}) {
           startTime: getHoursTimeZone(`${el.date} ${el.time}`, timeZone),
           title: `${el.teams[0].name} - ${el.teams[1].name}`,
           distanceHours: getDistanceToNow(`${el.date} ${el.time}`),
+          result: el.result,
         })
       }
     }
@@ -61,10 +62,13 @@ function getInfoForLike({data, likeClubs, timeZone}) {
 function conversionDataMatchesForLike(data) {
   try {
     if (!data.length) return null;
-    // let string = `\r\n<b><i>Сегодня играет ваша любимая команда</i></b>\r\n\r\n`;
     let string = '';
     data.forEach(el => {
-      string += `\r\n<i>Сегодня играет\r\n${el.startTime[0]} ${el.title} в ${el.startTime[1]}</i> (${el.distanceHours})\r\n`;
+      if (el.result) {
+        string += `\r\n<i>Результат\r\n$${el.title} ${el.result.detailed.goal1}:${el.result.detailed.goal2}\r\n`;
+      } else {
+        string += `\r\n<i>Сегодня играет\r\n${el.startTime[0]} ${el.title} в ${el.startTime[1]}</i> (${el.distanceHours})\r\n`;
+      }
     });
     return string;
   } catch (err) {
