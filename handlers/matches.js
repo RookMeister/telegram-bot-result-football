@@ -1,6 +1,7 @@
 const { dateKBInline } = require('../helpers/keyboards');
-const { getData } = require('../helpers/api')
-const { getDataMatches, conversionDataMatches } = require('../helpers/matches')
+const { getData } = require('../helpers/api');
+const { getDataMatches, conversionDataMatches } = require('../helpers/matches');
+const { UserModel } = require('../models/user');
 
 function setupMatches(bot) {
   bot.hears('Матч-центр', (ctx) => getMatches(ctx, 'now'));
@@ -27,6 +28,8 @@ async function getMatches(ctx, date, editMessage) {
   } else {
     ctx.replyWithHTML(info, options);
   }
+
+  await UserModel.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { lastActionTime: new Date() } });
 }
 
 // Exports

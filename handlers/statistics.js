@@ -1,6 +1,7 @@
 const { countryKBInline, statViewKBInline, countryKey, statViewKey } = require('../helpers/keyboards');
-const { getData } = require('../helpers/api')
-const { getDataStat, conversionDataStat } = require('../helpers/statistics')
+const { getData } = require('../helpers/api');
+const { getDataStat, conversionDataStat } = require('../helpers/statistics');
+const { UserModel } = require('../models/user');
 
 function setupStat(bot) {
   bot.hears('Статистика', (ctx) => selectCountry(ctx));
@@ -26,6 +27,7 @@ async function getResult(ctx) {
   const info = conversionDataStat({data, view: ctx.match.input});
   options.parse_mode = 'HTML';
   ctx.editMessageText(info, options);
+  await UserModel.findOneAndUpdate({chat_id: ctx.chat.id}, { $set: { lastActionTime: new Date() } });
 }
 
 // Exports

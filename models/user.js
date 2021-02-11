@@ -31,6 +31,7 @@ const UserSchema = new Schema({
   isSendLikeClub: { type: Boolean, default: false },
   subscribeTournaments: { type: [String], default: tournaments },
   likeClub: [String],
+  lastActionTime : { type : Date, default: new Date() }
 }, {
   timestamps: true,
 });
