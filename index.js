@@ -26,7 +26,7 @@ setupTimeZone(bot);
 setupSettings(bot);
 
 bot.on('message', (ctx) => {
-  const info = 'Извини, я не могу тебя понять. Используй кнопки. Если не видишь кнопки, отправь мне /start';
+  const info = ctx.i18n.t('messageError');
   ctx.reply(info);
 });
 

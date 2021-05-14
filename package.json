@@ -23,7 +23,8 @@
     "mongoose": "^5.10.9",
     "node-fetch": "^2.6.1",
     "string-table": "^0.1.5",
-    "telegraf": "^3.38.0"
+    "telegraf": "^3.38.0",
+    "telegraf-i18n": "^6.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
