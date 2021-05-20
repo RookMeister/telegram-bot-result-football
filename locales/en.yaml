@@ -1,3 +1,15 @@
 messageError: Sorry, I can't understand you. Use the buttons. If you don't see the button, send me / start
 start: Select a section from the menu
 language: You have chosen eu
+lastInfo: Has already
+btnSettings: Settings
+btnMailings: Mailings
+btnSubscriptions: Subscriptions
+btnBack: Back to settings
+btnDel: Delete
+btnAbout: About the bot
+titleSubscriptions: Select the type of subscription
+statisticTitle1: Select a country
+statisticTitle2: Select result type
+titleTimeZone: Here you can choose a time zone and find out which push notifications you are subscribed to.
+aboutTheBot: I was created so that users can quickly and conveniently find out the results of football matches. If there are any problems, shortcomings or wishes, then my creator is ready to listen to you @ Rookmeister. If I am useful to you, then I can do it <a href="https://sobe.ru/na/rookmeister">donation</a>.
