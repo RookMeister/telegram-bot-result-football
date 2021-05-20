@@ -55,7 +55,7 @@ const timeZoneKBInline = inInline(timeZoneKey, 6);
 const settingsKBInline = inInline(settingsKey, 3, true);
 const viewSubscribeKBInline = inInline(viewSubscribeKey, 2);
 const backToKBInline = inInline(backToKey, 1);
-const deleteKBInline = inInline(['❌ Удалить'], 1);
+// const deleteKBInline = inInline(['❌ Удалить'], 1);
 
 // countryKBInline.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
 // statViewKBInline.reply_markup.inline_keyboard.push(deleteKBInline.reply_markup.inline_keyboard[0]);
@@ -79,5 +79,5 @@ module.exports = {
   viewSubscribeKBInline,
   backToKBInline,
   mainKeyboard,
-  deleteKBInline,
+  // deleteKBInline,
 }
