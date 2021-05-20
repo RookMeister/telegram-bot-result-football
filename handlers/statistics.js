@@ -5,19 +5,20 @@ const { UserModel } = require('../models/user');
 
 function setupStat(bot) {
   bot.hears('Статистика', (ctx) => selectCountry(ctx));
+  bot.hears('Statistics', (ctx) => selectCountry(ctx));
   bot.action(new RegExp(countryKey.map(el => el.value).join("|")), (ctx) => selectyResult(ctx));
   bot.action(new RegExp(statViewKey.map(el => el.value).join("|")), (ctx) => getResult(ctx));
 }
 
 async function selectCountry(ctx) {
   const options = countryKBInline;
-  ctx.replyWithHTML('Выберите страну', options);
+  ctx.replyWithHTML(ctx.i18n.t('statisticTitle1'), options);
 }
 
 async function selectyResult(ctx) {
   ctx.session.countryCode = ctx.match.input;
   const options = statViewKBInline;
-  ctx.editMessageText('Выберите вид результата', options);
+  ctx.editMessageText(ctx.i18n.t('statisticTitle2'), options);
 }
 
 async function getResult(ctx) {

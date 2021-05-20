@@ -5,6 +5,7 @@ const { UserModel } = require('../models/user');
 
 function setupTimeZone(bot) {
   bot.action('Настроить время', (ctx) => showTomeZone(ctx));
+  bot.action('Set the time', (ctx) => showTomeZone(ctx));
   bot.action(new RegExp(timeZoneKey.map(el => '\\'+el).join("|")), async (ctx) => setTimeZone(ctx));
 }
 
