@@ -1,6 +1,7 @@
 const { getData } = require('../helpers/api')
 const { getDataMatches, conversionDataMatches, getInfoForLike } = require('../helpers/matches')
 const { findAllUsers } = require('../models/user');
+const Markup = require('telegraf/markup');
 // const { deleteKBInline } = require('../helpers/keyboards');
 
 const { UserModel } = require('../models/user');
@@ -52,9 +53,10 @@ function getMatches({json, subscriptions, timeZone, checkEnd}) {
 async function sendMessage(ctx, chatId, info) {
   try {
     await timeoutPromise(300);
+    const options = Markup.inlineKeyboard().extra();
     // const options = deleteKBInline;
-    // options.disable_web_page_preview = true;
-    // options.parse_mode = 'html';
+    options.disable_web_page_preview = true;
+    options.parse_mode = 'html';
     console.log('sendMessage',!!info, chatId);
     ctx.sendMessage(chatId, info)
   } catch (e) {
